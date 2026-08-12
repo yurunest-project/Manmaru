@@ -200,7 +200,7 @@ export function SettingsScreen() {
         </button>
 
         <h2>サポート・情報</h2>
-        <LegalLinks />
+        <LegalLinks includeQa />
       </div>
     </section>
   );

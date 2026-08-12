@@ -1,19 +1,25 @@
-type LegalKind = "privacy" | "tokushoho";
+type LegalKind = "privacy" | "tokushoho" | "qa";
+
+const TITLES: Record<LegalKind, string> = {
+  privacy: "プライバシーポリシー",
+  tokushoho: "特定商取引法に基づく表記",
+  qa: "Q&A",
+};
 
 export function LegalScreen({ kind, onClose }: { kind: LegalKind; onClose: () => void }) {
-  const title = kind === "privacy" ? "プライバシーポリシー" : "特定商取引法に基づく表記";
-
   return (
     <section className="screen legal-screen">
       <div className="topbar">
         <button type="button" className="sheet-close" onClick={onClose}>
           閉じる
         </button>
-        <strong>{title}</strong>
+        <strong>{TITLES[kind]}</strong>
         <span style={{ width: 48 }} />
       </div>
       <div className="legal-body stack">
-        {kind === "privacy" ? <PrivacyContent /> : <TokushohoContent />}
+        {kind === "privacy" && <PrivacyContent />}
+        {kind === "tokushoho" && <TokushohoContent />}
+        {kind === "qa" && <QaContent />}
       </div>
     </section>
   );
@@ -104,19 +110,76 @@ function TokushohoContent() {
   );
 }
 
+function QaContent() {
+  return (
+    <>
+      <div className="qa-item">
+        <h2>Q. iPhone / LINE から開けますか？</h2>
+        <p>
+          Safari で開いてください。LINE などアプリ内ブラウザでは、Google ログインがうまくいかないことがあります。共有リンクを長押しして「Safari で開く」を選ぶか、Safari のアドレス欄に URL を貼り付けてください。
+        </p>
+      </div>
+      <div className="qa-item">
+        <h2>Q. 別の Google アカウントでログインしたい</h2>
+        <p>
+          サインイン画面の「別のアカウントでサインイン」、または設定の「アカウントを切り替える」からやり直してください。Google の画面でアカウント一覧が出たら、使いたいアカウントを選んでください。
+        </p>
+      </div>
+      <div className="qa-item">
+        <h2>Q. ふたりで予定を共有するには？</h2>
+        <p>
+          どちらかが招待コードを作成し、もう一方がコードを入力してつながります。つながるとカレンダーと予定がふたりで同期されます。
+        </p>
+      </div>
+      <div className="qa-item">
+        <h2>Q. ニックネームはどこで変えますか？</h2>
+        <p>設定画面の「ニックネーム」から変更できます。相手の画面にも反映されます。</p>
+      </div>
+      <div className="qa-item">
+        <h2>Q. お問い合わせはどこへ？</h2>
+        <p>
+          <a href="mailto:hitomoshi@gmail.com">hitomoshi@gmail.com</a> までご連絡ください。
+        </p>
+      </div>
+    </>
+  );
+}
+
 export function openLegalHash(kind: LegalKind) {
   window.location.hash = kind;
 }
 
 export function parseLegalHash(hash = window.location.hash): LegalKind | null {
   const value = hash.replace(/^#/, "");
-  if (value === "privacy" || value === "tokushoho") return value;
+  if (value === "privacy" || value === "tokushoho" || value === "qa") return value;
   return null;
 }
 
-export function LegalLinks({ className = "" }: { className?: string }) {
+function ExternalMark() {
+  return (
+    <svg className="legal-external" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
+      <path
+        fill="currentColor"
+        d="M3.5 2.5h2v1H3.75a.75.75 0 0 0-.75.75v4c0 .41.34.75.75.75h4c.41 0 .75-.34.75-.75V6.5h1v1.75A1.75 1.75 0 0 1 7.75 10h-4A1.75 1.75 0 0 1 2 8.25v-4c0-.97.78-1.75 1.75-1.75zm3 0H10v3.5H9V4.2L5.35 7.85l-.7-.7L8.3 3.5H6.5v-1z"
+      />
+    </svg>
+  );
+}
+
+export function LegalLinks({
+  className = "",
+  includeQa = false,
+}: {
+  className?: string;
+  includeQa?: boolean;
+}) {
   return (
     <nav className={`legal-links ${className}`.trim()} aria-label="サポート・情報">
+      {includeQa && (
+        <button type="button" className="legal-link" onClick={() => openLegalHash("qa")}>
+          Q&A
+        </button>
+      )}
       <button type="button" className="legal-link" onClick={() => openLegalHash("privacy")}>
         プライバシー
       </button>
@@ -132,7 +195,8 @@ export function LegalLinks({ className = "" }: { className?: string }) {
         target="_blank"
         rel="noreferrer"
       >
-        ひともし
+        他事業紹介
+        <ExternalMark />
       </a>
     </nav>
   );

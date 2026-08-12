@@ -67,16 +67,6 @@ export function SignInScreen() {
           {busy ? "接続中..." : "別のアカウントでサインイン"}
         </button>
       </div>
-      <p className="muted" style={{ textAlign: "center", marginTop: 16, fontSize: 13, lineHeight: 1.6 }}>
-        Google の画面でアカウント一覧が表示されます。
-        <br />
-        別のアカウントを使う場合は、そこから選んでください。
-      </p>
-      <p className="muted" style={{ textAlign: "center", marginTop: 8, fontSize: 13, lineHeight: 1.6 }}>
-        iPhone の方へ: Safari で開いてください。
-        <br />
-        LINE などアプリ内ブラウザではログインできないことがあります。
-      </p>
       <button className="muted" type="button" style={{ marginTop: 18 }} onClick={enterPreview}>
         サンプルで見る
       </button>
