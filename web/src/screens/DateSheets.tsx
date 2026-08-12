@@ -197,19 +197,38 @@ function PlaceSearchSheet({
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Destination[]>([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    const controller = new AbortController();
     const handle = window.setTimeout(() => {
-      if (query.trim().length < 2) {
+      const trimmed = query.trim();
+      if (trimmed.length < 2) {
         setResults([]);
+        setError(null);
+        setLoading(false);
         return;
       }
       setLoading(true);
-      void searchPlaces(query)
-        .then(setResults)
-        .finally(() => setLoading(false));
+      setError(null);
+      void searchPlaces(trimmed, controller.signal)
+        .then((items) => {
+          setResults(items);
+          if (items.length === 0) setError("見つかりませんでした。別のキーワードか、下のボタンで追加できます。");
+        })
+        .catch((err: unknown) => {
+          if ((err as { name?: string }).name === "AbortError") return;
+          setResults([]);
+          setError(err instanceof Error ? err.message : "検索に失敗しました");
+        })
+        .finally(() => {
+          if (!controller.signal.aborted) setLoading(false);
+        });
     }, 280);
-    return () => window.clearTimeout(handle);
+    return () => {
+      window.clearTimeout(handle);
+      controller.abort();
+    };
   }, [query]);
 
   return (
@@ -225,6 +244,7 @@ function PlaceSearchSheet({
           />
         </div>
         {loading && <p className="muted">検索中...</p>}
+        {!loading && error && <p className="muted">{error}</p>}
         {query.trim().length >= 2 && (
           <button
             className="secondary"
