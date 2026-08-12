@@ -6,6 +6,10 @@
   "framework": null,
   "rewrites": [
     {
+      "source": "/__/auth/:path*",
+      "destination": "https://hitomoshi-ab905.firebaseapp.com/__/auth/:path*"
+    },
+    {
       "source": "/((?!assets/).*)",
       "destination": "/index.html"
     }

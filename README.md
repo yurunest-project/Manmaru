@@ -62,6 +62,18 @@ Root Directory は空のままで大丈夫です（リポジトリ直下の `ver
 
 7. 公開後、Firebase Authentication の「承認済みドメイン」に Vercel のドメイン（例: `xxx.vercel.app`）を追加する
 
+### Google ログインが iPhone で止まるとき
+
+Vercel では auth を自ドメイン経由にする必要があります（`vercel.json` に `/__/auth/` プロキシ済み）。
+
+**Google Cloud → 認証情報 → OAuth 2.0 クライアント ID** の「承認済みのリダイレクト URI」に追加:
+
+```
+https://manmaru-chi.vercel.app/__/auth/handler
+```
+
+**API キーの HTTP リファラー** にも `https://manmaru-chi.vercel.app/*` を入れてください。
+
 ## iOS アプリ（あとから）
 
 `Manmaru.xcodeproj` がネイティブ版です。Web と同じ Firestore を共有できます。Sign in with Apple を有効にしてから Xcode でビルドしてください。

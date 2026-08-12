@@ -18,6 +18,25 @@
     <link rel="icon" href="/favicon-16.png" type="image/png" sizes="16x16" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
     <title>まんまる</title>
+    <script>
+      (function () {
+        var ua = navigator.userAgent || "";
+        var isIOS = /iPhone|iPad|iPod/i.test(ua);
+        if (!isIOS || window.navigator.standalone) return;
+
+        if (/Line\//i.test(ua)) {
+          var url = new URL(location.href);
+          if (url.searchParams.get("openExternalBrowser") === "1") return;
+          url.searchParams.set("openExternalBrowser", "1");
+          location.replace(url.toString());
+          return;
+        }
+
+        if (/FBAN|FBAV/i.test(ua)) {
+          location.replace("x-safari-" + location.href);
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

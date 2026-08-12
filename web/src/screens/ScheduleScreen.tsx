@@ -63,8 +63,23 @@ export function ScheduleScreen() {
 }
 
 export function SettingsScreen() {
-  const { themeId, setTheme, couple, profile, preview, signOut, leaveCouple } = useApp();
+  const { themeId, setTheme, couple, profile, preview, signOut, leaveCouple, updateNickname, busy } =
+    useApp();
   const [copied, setCopied] = useState(false);
+  const [nickname, setNickname] = useState(profile?.nickname ?? "");
+  const [nicknameSaved, setNicknameSaved] = useState(false);
+
+  useEffect(() => {
+    setNickname(profile?.nickname ?? "");
+    setNicknameSaved(false);
+  }, [profile?.nickname]);
+
+  const saveNickname = async () => {
+    await updateNickname(nickname);
+    setNicknameSaved(true);
+  };
+
+  const nicknameDirty = nickname.trim() !== (profile?.nickname ?? "").trim();
 
   return (
     <section className="screen">
@@ -134,10 +149,39 @@ export function SettingsScreen() {
         )}
 
         <h2>アカウント</h2>
-        <div className="card">
-          <strong>{profile?.displayName ?? "パートナー"}</strong>
+        <div className="card stack">
+          <div>
+            <p className="muted">メールアドレス</p>
+            <strong>{profile?.email || "—"}</strong>
+          </div>
+          <div>
+            <p className="muted">ニックネーム</p>
+            <p className="muted" style={{ fontSize: 13, marginBottom: 8 }}>
+              相手に表示される名前です
+            </p>
+            <div className="row" style={{ gap: 8 }}>
+              <input
+                className="field grow"
+                value={nickname}
+                onChange={(event) => {
+                  setNickname(event.target.value);
+                  setNicknameSaved(false);
+                }}
+                placeholder="ニックネーム"
+                maxLength={32}
+              />
+              <button
+                className="secondary"
+                type="button"
+                disabled={busy || !nicknameDirty || !nickname.trim()}
+                onClick={() => void saveNickname()}
+              >
+                {nicknameSaved && !nicknameDirty ? "保存済み" : "保存"}
+              </button>
+            </div>
+          </div>
           {preview && (
-            <p className="muted" style={{ marginTop: 8 }}>
+            <p className="muted">
               サンプル表示中です。Firebase を設定すると2人で共有できます。
             </p>
           )}

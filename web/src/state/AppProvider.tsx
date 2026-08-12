@@ -70,6 +70,20 @@ function planFromDoc(id: string, data: Record<string, unknown>): DatePlan {
   };
 }
 
+function profileFromData(data: Record<string, unknown>, user?: User | null): UserProfile {
+  const displayName = String(data.displayName || user?.displayName || "パートナー");
+  const email = String(data.email || user?.email || "");
+  const nickname = String(data.nickname || displayName);
+  return {
+    displayName,
+    email,
+    nickname,
+    coupleId: (data.coupleId as string | null | undefined) ?? null,
+    themeId: (data.themeId as ThemeId) || "sakura",
+    createdAt: toDate(data.createdAt),
+  };
+}
+
 type AppState = {
   route: Route;
   tab: Tab;
@@ -91,6 +105,7 @@ type AppState = {
   joinCouple: (code: string) => Promise<void>;
   leaveCouple: () => Promise<void>;
   setTheme: (id: ThemeId) => Promise<void>;
+  updateNickname: (nickname: string) => Promise<void>;
   saveDate: (plan: DatePlan) => Promise<void>;
   deleteDate: (plan: DatePlan) => Promise<void>;
   datesOn: (day: Date) => DatePlan[];
@@ -134,15 +149,22 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const snap = await getDoc(ref);
     if (snap.exists()) {
       const data = snap.data();
-      return {
-        displayName: String(data.displayName || user.displayName || "パートナー"),
-        coupleId: data.coupleId ?? null,
-        themeId: (data.themeId as ThemeId) || "sakura",
-        createdAt: toDate(data.createdAt),
-      } satisfies UserProfile;
+      const profile = profileFromData(data, user);
+      const needsBackfill = !data.email || !data.nickname;
+      if (needsBackfill) {
+        await updateDoc(ref, {
+          email: profile.email,
+          nickname: profile.nickname,
+          displayName: profile.displayName,
+        });
+      }
+      return profile;
     }
+    const displayName = user.displayName || "パートナー";
     const fresh: UserProfile = {
-      displayName: user.displayName || "パートナー",
+      displayName,
+      email: user.email || "",
+      nickname: displayName,
       coupleId: null,
       themeId: "sakura",
       createdAt: new Date(),
@@ -160,10 +182,23 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setRoute("setup");
       return;
     }
-    void getRedirectResult(auth).catch((err) => {
-      const message = err instanceof Error ? err.message : "ログインできませんでした";
-      if (!message.includes("popup-closed")) setError(message);
-    });
+
+    let active = true;
+
+    const boot = async () => {
+      try {
+        await getRedirectResult(auth!);
+      } catch (err) {
+        if (!active) return;
+        const message = err instanceof Error ? err.message : "ログインできませんでした";
+        if (!message.includes("popup-closed")) {
+          setError(`ログインに失敗しました: ${message}`);
+        }
+      }
+    };
+
+    void boot();
+
     const unsub = onAuthStateChanged(auth, async (user) => {
       setUid(user?.uid ?? null);
       if (!user || !db) {
@@ -184,7 +219,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setRoute("signedOut");
       }
     });
-    return () => unsub();
+    return () => {
+      active = false;
+      unsub();
+    };
   }, [ensureUser, preview]);
 
   useEffect(() => {
@@ -195,12 +233,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         return;
       }
       const data = snap.data();
-      const next: UserProfile = {
-        displayName: String(data.displayName || "パートナー"),
-        coupleId: data.coupleId ?? null,
-        themeId: (data.themeId as ThemeId) || "sakura",
-        createdAt: toDate(data.createdAt),
-      };
+      const next = profileFromData(data);
       setProfile(next);
       setThemeId(next.themeId);
       if (next.coupleId) setRoute("main");
@@ -244,14 +277,35 @@ export function AppProvider({ children }: { children: ReactNode }) {
       return;
     }
     setBusy(true);
+    setError(null);
+    const provider = new GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: "select_account" });
+
     try {
-      const provider = new GoogleAuthProvider();
-      const mobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-      if (mobile) await signInWithRedirect(auth, provider);
-      else await signInWithPopup(auth, provider);
+      // PC と同じ popup をまず試す（多くの Android で動く）
+      await signInWithPopup(auth, provider);
     } catch (err) {
-      const message = err instanceof Error ? err.message : "ログインできませんでした";
-      if (!message.includes("popup-closed")) setError(message);
+      const code = (err as { code?: string }).code ?? "";
+      const popupFailed =
+        code === "auth/popup-blocked" ||
+        code === "auth/popup-closed-by-user" ||
+        code === "auth/operation-not-supported-in-this-environment" ||
+        code === "auth/cancelled-popup-request";
+
+      if (popupFailed && code !== "auth/popup-closed-by-user") {
+        // iPhone Safari など: 同一ドメイン auth プロキシ経由の redirect
+        try {
+          await signInWithRedirect(auth, provider);
+          return;
+        } catch (redirectErr) {
+          const message =
+            redirectErr instanceof Error ? redirectErr.message : "ログインできませんでした";
+          setError(message);
+        }
+      } else if (code !== "auth/popup-closed-by-user") {
+        const message = err instanceof Error ? err.message : "ログインできませんでした";
+        setError(message);
+      }
     } finally {
       setBusy(false);
     }
@@ -285,6 +339,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         createdAt: Timestamp.now(),
       });
       await updateDoc(doc(db, "users", uid), { coupleId: coupleRef.id });
+      setTab("settings");
     } catch (err) {
       setError(err instanceof Error ? err.message : "ペアを作れませんでした");
     } finally {
@@ -349,6 +404,24 @@ export function AppProvider({ children }: { children: ReactNode }) {
     await updateDoc(doc(db, "users", uid), { themeId: id });
   };
 
+  const updateNickname = async (nickname: string) => {
+    const trimmed = nickname.trim();
+    if (!trimmed) {
+      setError("ニックネームを入力してください");
+      return;
+    }
+    setProfile((current) => (current ? { ...current, nickname: trimmed } : current));
+    if (preview || !uid || !db) return;
+    setBusy(true);
+    try {
+      await updateDoc(doc(db, "users", uid), { nickname: trimmed });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "ニックネームを保存できませんでした");
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const saveDate = async (plan: DatePlan) => {
     if (preview) {
       setDates((current) => {
@@ -388,6 +461,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setPreview(true);
     setProfile({
       displayName: "ゆう",
+      email: "preview@example.com",
+      nickname: "ゆう",
       coupleId: "preview",
       themeId: "sakura",
       createdAt: new Date(),
@@ -424,6 +499,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     joinCouple,
     leaveCouple,
     setTheme,
+    updateNickname,
     saveDate,
     deleteDate,
     datesOn,

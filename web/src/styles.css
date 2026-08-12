@@ -61,6 +61,7 @@ body,
   margin: 0;
   min-height: 100%;
   min-height: 100dvh;
+  overflow-x: clip;
 }
 
 body {
@@ -89,15 +90,18 @@ button {
 }
 
 .phone {
-  width: min(430px, 100%);
+  width: 100%;
+  max-width: 430px;
   margin: 0 auto;
   min-height: 100dvh;
   position: relative;
-  overflow: hidden;
+  overflow-x: clip;
 }
 
 .screen {
   min-height: 100dvh;
+  width: 100%;
+  max-width: 100%;
   padding: calc(18px + env(safe-area-inset-top)) 20px 120px;
 }
 
@@ -139,6 +143,8 @@ p {
   border-radius: var(--radius);
   box-shadow: 0 10px 24px var(--shadow);
   padding: 20px;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .stack {
@@ -337,9 +343,10 @@ p {
 .weekdays,
 .grid {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 8px 6px;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px 4px;
   text-align: center;
+  width: 100%;
 }
 
 .weekdays {
@@ -354,7 +361,9 @@ p {
 }
 
 .day {
-  min-height: 44px;
+  min-width: 0;
+  min-height: 0;
+  padding: 0;
   display: grid;
   justify-items: center;
   gap: 4px;
@@ -362,8 +371,9 @@ p {
 }
 
 .day b {
-  width: 36px;
-  height: 36px;
+  width: min(100%, 36px);
+  aspect-ratio: 1;
+  height: auto;
   border-radius: 50%;
   display: grid;
   place-items: center;
@@ -388,6 +398,39 @@ p {
 
 .day.next .dot {
   background: var(--accent);
+}
+
+.next-date {
+  font-size: clamp(22px, 6vw, 28px);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  margin: 0;
+  line-height: 1.25;
+}
+
+.card .row {
+  flex-wrap: wrap;
+}
+
+.card .row strong {
+  min-width: 0;
+  word-break: break-word;
+}
+
+@media (max-width: 360px) {
+  .screen {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .card {
+    padding: 16px;
+  }
+
+  .weekdays,
+  .grid {
+    gap: 4px 2px;
+  }
 }
 
 .schedule-item {
@@ -539,4 +582,8 @@ code {
   background: var(--muted);
   padding: 2px 6px;
   border-radius: 6px;
+}
+
+.safari-gate {
+  max-width: 100%;
 }

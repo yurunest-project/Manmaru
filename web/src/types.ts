@@ -20,10 +20,17 @@ export type DatePlan = {
 
 export type UserProfile = {
   displayName: string;
+  email: string;
+  nickname: string;
   coupleId?: string | null;
   themeId: ThemeId;
   createdAt: Date;
 };
+
+export function partnerDisplayName(profile: UserProfile) {
+  const nick = profile.nickname.trim();
+  return nick || profile.displayName || "パートナー";
+}
 
 export type CoupleProfile = {
   id: string;

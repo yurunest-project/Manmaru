@@ -61,6 +61,11 @@ export function SignInScreen() {
         </svg>
         {busy ? "接続中..." : "Google でサインイン"}
       </button>
+      <p className="muted" style={{ textAlign: "center", marginTop: 16, fontSize: 13, lineHeight: 1.6 }}>
+        iPhone の方へ: Safari で開いてください。
+        <br />
+        LINE などアプリ内ブラウザではログインできないことがあります。
+      </p>
       <button className="muted" type="button" style={{ marginTop: 18 }} onClick={enterPreview}>
         サンプルで見る
       </button>

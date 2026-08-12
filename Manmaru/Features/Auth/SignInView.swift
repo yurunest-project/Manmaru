@@ -33,8 +33,8 @@ struct SignInView: View {
                 }
                 Spacer()
 
-                VStack(spacing: 16) {
-                    AppleSignInButton(style: theme.isDark ? .white : .black) {
+                <VStack spacing: 16) {
+                    PrimaryButton(title: "Google でサインイン", systemImage: nil, isLoading: model.isBusy) {(style: theme.isDark ? .white : .black) {
                         Task { await model.signInWithApple() }
                     }
                     .frame(height: 52)

@@ -42,10 +42,10 @@ export function CalendarScreen() {
           {nextDate ? (
             <div className="stack" style={{ gap: 10 }}>
               <p style={{ color: "var(--accent)", fontWeight: 700 }}>次のデート</p>
-              <h1>{fullDate(nextDate.date)}</h1>
+              <p className="next-date">{fullDate(nextDate.date)}</p>
               <div className="row">
                 <span className="chip">{countdownLabel(nextDate.date)}</span>
-                <strong>{displayTitle(nextDate)}</strong>
+                <strong className="grow">{displayTitle(nextDate)}</strong>
               </div>
             </div>
           ) : (
