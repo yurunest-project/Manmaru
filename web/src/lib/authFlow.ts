@@ -2,17 +2,17 @@ export function isIOS() {
   return /iPhone|iPad|iPod/i.test(navigator.userAgent);
 }
 
-export function authRedirectUri() {
-  if (typeof window === "undefined") return "";
-  const { protocol, hostname, port } = window.location;
-  if (hostname === "localhost" || hostname === "127.0.0.1") {
-    const p = port || "5173";
-    return `${protocol}//${hostname}:${p}/__/auth/handler`;
-  }
-  return `${protocol}//${hostname}/__/auth/handler`;
+export function authRedirectUri(authDomain?: string | null) {
+  if (!authDomain) return "";
+  return `https://${authDomain}/__/auth/handler`;
 }
 
-export function authErrorMessage(err: unknown) {
+export function authJavaScriptOrigin() {
+  if (typeof window === "undefined") return "";
+  return window.location.origin;
+}
+
+export function authErrorMessage(err: unknown, authDomain?: string | null) {
   const code = (err as { code?: string }).code ?? "";
   const message = err instanceof Error ? err.message : String(err);
 
@@ -21,12 +21,25 @@ export function authErrorMessage(err: unknown) {
     message.includes("redirect_uri_mismatch") ||
     message.includes("redirect_uri")
   ) {
-    const uri = authRedirectUri();
-    return `Googleログインの設定が不足しています。Google Cloud の OAuth クライアントに次を追加してください: ${uri}`;
+    const uri = authRedirectUri(authDomain);
+    const origin = authJavaScriptOrigin();
+    return [
+      "Google OAuth の設定が合っていません。",
+      `Firebase Console → Authentication → Google → Web client ID と同じクライアントを Google Cloud で開き、`,
+      `リダイレクト URI: ${uri}`,
+      origin ? `JavaScript 生成元: ${origin}` : "",
+      "を追加してください。",
+    ]
+      .filter(Boolean)
+      .join(" ");
   }
 
   if (code === "auth/unauthorized-domain") {
     return "このドメインは Firebase Authentication の承認済みドメインに追加されていません。";
+  }
+
+  if (code === "auth/popup-blocked" || code === "auth/operation-not-supported-in-this-environment") {
+    return "ポップアップがブロックされました。Safari で開き直してから、もう一度お試しください。";
   }
 
   return message || "ログインできませんでした";
@@ -41,4 +54,8 @@ export function returningFromAuthRedirect() {
     window.location.hash.includes("apiKey") ||
     window.location.pathname.includes("/__/auth/")
   );
+}
+
+export function iosPopupOnlySignIn() {
+  return isIOS();
 }

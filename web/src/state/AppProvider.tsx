@@ -32,8 +32,8 @@ import {
   type ReactNode,
 } from "react";
 import { isSameDay, startOfDay } from "../lib/dates";
-import { authErrorMessage, returningFromAuthRedirect } from "../lib/authFlow";
-import { auth, db, firebaseReady } from "../lib/firebase";
+import { authErrorMessage, iosPopupOnlySignIn, returningFromAuthRedirect } from "../lib/authFlow";
+import { auth, db, firebaseAuthDomain, firebaseReady } from "../lib/firebase";
 import { samplePlans } from "../lib/samples";
 import type {
   CoupleProfile,
@@ -198,7 +198,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         await getRedirectResult(firebaseAuth);
       } catch (err) {
         if (!active) return;
-        const message = authErrorMessage(err);
+        const message = authErrorMessage(err, firebaseAuthDomain);
         if (!message.includes("popup-closed")) {
           setError(`ログインに失敗しました: ${message}`);
         }
@@ -303,15 +303,19 @@ export function AppProvider({ children }: { children: ReactNode }) {
         code === "auth/cancelled-popup-request";
 
       if (popupFailed && code !== "auth/popup-closed-by-user") {
-        try {
-          setRoute("loading");
-          await signInWithRedirect(auth, provider);
-          return;
-        } catch (redirectErr) {
-          setError(authErrorMessage(redirectErr));
+        if (iosPopupOnlySignIn()) {
+          setError(authErrorMessage(err, firebaseAuthDomain));
+        } else {
+          try {
+            setRoute("loading");
+            await signInWithRedirect(auth, provider);
+            return;
+          } catch (redirectErr) {
+            setError(authErrorMessage(redirectErr, firebaseAuthDomain));
+          }
         }
       } else if (code !== "auth/popup-closed-by-user") {
-        setError(authErrorMessage(err));
+        setError(authErrorMessage(err, firebaseAuthDomain));
       }
     } finally {
       setBusy(false);
