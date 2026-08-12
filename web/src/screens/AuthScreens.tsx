@@ -74,7 +74,7 @@ export function SignInScreen() {
 }
 
 export function PairingScreen() {
-  const { createCouple, joinCouple, signOut, busy } = useApp();
+  const { createCouple, joinCouple, signOut, switchAccount, busy } = useApp();
   const [mode, setMode] = useState<"choose" | "join">("choose");
   const [code, setCode] = useState("");
 
@@ -127,7 +127,10 @@ export function PairingScreen() {
           </button>
         </div>
       )}
-      <button className="muted" type="button" style={{ marginTop: 28 }} onClick={() => void signOut()}>
+      <button className="secondary" type="button" style={{ marginTop: 28 }} disabled={busy} onClick={() => void switchAccount()}>
+        {busy ? "切り替え中..." : "別のアカウントでログイン"}
+      </button>
+      <button className="muted" type="button" style={{ marginTop: 12 }} onClick={() => void signOut()}>
         ログアウト
       </button>
     </section>

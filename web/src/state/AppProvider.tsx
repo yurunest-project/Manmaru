@@ -100,6 +100,7 @@ type AppState = {
   setTab: (tab: Tab) => void;
   setError: (message: string | null) => void;
   signInWithGoogle: () => Promise<void>;
+  switchAccount: () => Promise<void>;
   signOut: () => Promise<void>;
   createCouple: () => Promise<void>;
   joinCouple: (code: string) => Promise<void>;
@@ -271,7 +272,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     };
   }, [profile?.coupleId, preview]);
 
-  const signInWithGoogle = async () => {
+  const performGoogleSignIn = async () => {
     if (!auth) {
       setError("Firebase の設定がまだです");
       return;
@@ -282,7 +283,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
     provider.setCustomParameters({ prompt: "select_account" });
 
     try {
-      // PC と同じ popup をまず試す（多くの Android で動く）
       await signInWithPopup(auth, provider);
     } catch (err) {
       const code = (err as { code?: string }).code ?? "";
@@ -293,7 +293,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
         code === "auth/cancelled-popup-request";
 
       if (popupFailed && code !== "auth/popup-closed-by-user") {
-        // iPhone Safari など: 同一ドメイン auth プロキシ経由の redirect
         try {
           await signInWithRedirect(auth, provider);
           return;
@@ -309,6 +308,29 @@ export function AppProvider({ children }: { children: ReactNode }) {
     } finally {
       setBusy(false);
     }
+  };
+
+  const signInWithGoogle = async () => {
+    await performGoogleSignIn();
+  };
+
+  const switchAccount = async () => {
+    if (preview) {
+      await signOut();
+      return;
+    }
+    if (!auth) {
+      setError("Firebase の設定がまだです");
+      return;
+    }
+    setError(null);
+    try {
+      await firebaseSignOut(auth);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "アカウントを切り替えられませんでした");
+      return;
+    }
+    await performGoogleSignIn();
   };
 
   const signOut = async () => {
@@ -362,7 +384,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
         await updateDoc(doc(db, "users", uid), { coupleId });
         return;
       }
-      if (memberIds.length >= 2) throw new Error("すでに2人つながっています。");
+      if (memberIds.length >= 2) {
+        throw new Error(
+          "すでに2人つながっています。別のGoogleアカウントでログインしている場合は、設定からアカウントを切り替えてください。",
+        );
+      }
       memberIds.push(uid);
       await updateDoc(doc(db, "couples", coupleId), { memberIds });
       await updateDoc(doc(db, "users", uid), { coupleId });
@@ -494,6 +520,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setTab,
     setError,
     signInWithGoogle,
+    switchAccount,
     signOut,
     createCouple,
     joinCouple,

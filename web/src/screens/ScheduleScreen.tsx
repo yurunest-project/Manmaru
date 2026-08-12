@@ -63,7 +63,7 @@ export function ScheduleScreen() {
 }
 
 export function SettingsScreen() {
-  const { themeId, setTheme, couple, profile, preview, signOut, leaveCouple, updateNickname, busy } =
+  const { themeId, setTheme, couple, profile, preview, signOut, switchAccount, leaveCouple, updateNickname, busy } =
     useApp();
   const [copied, setCopied] = useState(false);
   const [nickname, setNickname] = useState(profile?.nickname ?? "");
@@ -186,6 +186,11 @@ export function SettingsScreen() {
             </p>
           )}
         </div>
+        {!preview && (
+          <button className="secondary" type="button" disabled={busy} onClick={() => void switchAccount()}>
+            {busy ? "切り替え中..." : "アカウントを切り替える"}
+          </button>
+        )}
         <button className="ghost" type="button" onClick={() => void signOut()}>
           {preview ? "サンプルを終了" : "ログアウト"}
         </button>
