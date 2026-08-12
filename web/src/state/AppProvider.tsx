@@ -144,10 +144,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
       .sort((a, b) => a.date.getTime() - b.date.getTime())[0] ?? null;
   }, [dates]);
 
-  const sortedDates = useMemo(
-    () => [...dates].sort((a, b) => b.date.getTime() - a.date.getTime()),
-    [dates],
-  );
+  const sortedDates = useMemo(() => {
+    const start = startOfDay(new Date()).getTime();
+    return [...dates]
+      .filter((plan) => startOfDay(plan.date).getTime() >= start)
+      .sort((a, b) => a.date.getTime() - b.date.getTime());
+  }, [dates]);
 
   const datesOn = useCallback(
     (day: Date) => dates.filter((plan) => isSameDay(plan.date, day)),

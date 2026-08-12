@@ -130,8 +130,9 @@ export function DateEditorSheet({ plan, onClose }: { plan: DatePlan; onClose: ()
             </button>
           </div>
           {draft.destinations.length === 0 ? (
-            <Card>
-              <p className="muted">お店や場所を複数登録できます。タップすると車ルートが開きます。</p>
+            <Card onClick={() => setSearching(true)}>
+              <p className="muted">お店や場所をタップして追加できます</p>
+              <p style={{ color: "var(--primary)", fontWeight: 700, marginTop: 8 }}>行き先を探す</p>
             </Card>
           ) : (
             draft.destinations.map((destination) => (
