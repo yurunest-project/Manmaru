@@ -1,0 +1,538 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 60;
+	objects = {
+		05529BA3E3BAEAD11261696A /* DateService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E8ACCAB570433030B5A2CB8 /* DateService.swift */; };
+		06267CBF8B98FD02F300E7FB /* DateEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FA8A1D1A14F1188F4A84E91 /* DateEditorView.swift */; };
+		0A2A03228A1E63D8233A2A23 /* FirebaseBootstrap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 698A195C7BA8F2FC8F8A7965 /* FirebaseBootstrap.swift */; };
+		0D0F6894B24D91C7F6073EF2 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
+		0D989E4A1AB86E00C885E9E1 /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
+		0F6D33AC53CD2BD8379CD38B /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = A43F75913BD82CC2D3660178 /* FirebaseAuth */; };
+		0FC57E122557ADEE25C5E5C5 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3468BE0F9B696970D5820ED9 /* MapKit.framework */; };
+		11C4EC900AA1965E5F60389D /* Calendar */ = {
+			isa = PBXGroup;
+			children = (
+				4474A7E3AB5833EE1267D3CA /* CalendarView.swift */,
+				6791D28828F6285B1DAA2BD7 /* MonthGridView.swift */,
+				FCFA5E8CC86D9C8D051E017E /* NextDateCard.swift */,
+			);
+			path = Calendar;
+			sourceTree = "<group>";
+		};
+		143B9D7EB7729F7BEE101DA5 /* AuthenticationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AuthenticationServices.framework; path = System/Library/Frameworks/AuthenticationServices.framework; sourceTree = SDKROOT; };
+		175C932161BEBF3B8BB1F58C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				143B9D7EB7729F7BEE101DA5 /* AuthenticationServices.framework */,
+				3468BE0F9B696970D5820ED9 /* MapKit.framework */,
+				3D6F906223706F0CF2B32F9D /* CryptoKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		1908D02323B3F5213CA8B70A /* MonthGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6791D28828F6285B1DAA2BD7 /* MonthGridView.swift */; };
+		23AA9E329C70CECDC4B24CE5 /* InviteCodeGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteCodeGenerator.swift; sourceTree = "<group>"; };
+		27D5EBF642EB0F465F060B0C /* Color+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68431445BD0A80E2C7F5C60D /* Color+Hex.swift */; };
+		29B2D46AA747A59804D46E1F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0F6D33AC53CD2BD8379CD38B /* FirebaseAuth in Frameworks */,
+				5311FB4A63AD908BEBC63AE9 /* FirebaseFirestore in Frameworks */,
+				A2220A4AE89604536286363F /* AuthenticationServices.framework in Frameworks */,
+				0FC57E122557ADEE25C5E5C5 /* MapKit.framework in Frameworks */,
+				FF939F7CD1136EC6E04D365D /* CryptoKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2BED7969557A2846A5CDDDE7 /* PairingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PairingView.swift; sourceTree = "<group>"; };
+		2C3495591E10CB2A6AB17552 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				A53A2E73E9FB587BD8AFAEC9 /* SettingsView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		2E8ACCAB570433030B5A2CB8 /* DateService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateService.swift; sourceTree = "<group>"; };
+		319524AC56A0FD9B8764496F /* ManmaruApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManmaruApp.swift; sourceTree = "<group>"; };
+		32594761333DBC7990655EB4 /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
+		33942C6F7C8468D557D7812C /* Manmaru */ = {
+			isa = PBXGroup;
+			children = (
+				D1D0524B025E57AFFF263442 /* App */,
+				5FDB91368D7DDA2418B6CB65 /* Design */,
+				984D844B917CCD4C29DE2A97 /* Features */,
+				A1C86A29E589D48EC70B6A32 /* Models */,
+				887A6F90336FF23D95C3914B /* Resources */,
+				609874F33224C0C09F1FEE42 /* Services */,
+				9021D2FAC036FC5D483E9E11 /* Utilities */,
+			);
+			path = Manmaru;
+			sourceTree = "<group>";
+		};
+		3468BE0F9B696970D5820ED9 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		398F4310700A77A59A4780E2 /* FirebaseSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE54862293CEA1D9A6CB6492 /* FirebaseSetupView.swift */; };
+		39F4679E348D1ADADE2A6A0E /* AppCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCard.swift; sourceTree = "<group>"; };
+		3CEE13D0C7EC56A93AE3E796 /* DateDetailSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateDetailSheet.swift; sourceTree = "<group>"; };
+		3D43A2D3D32E118D5918F595 /* Manmaru.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Manmaru.entitlements; sourceTree = "<group>"; };
+		3D6F906223706F0CF2B32F9D /* CryptoKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CryptoKit.framework; path = System/Library/Frameworks/CryptoKit.framework; sourceTree = SDKROOT; };
+		42AEFBAE01D2DFD981F7DA7D /* Manmaru */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AFD04581184175117C78D9AC /* Build configuration list for PBXNativeTarget "Manmaru" */;
+			buildPhases = (
+				E7209FB05162B7572F88D05E /* Sources */,
+				29B2D46AA747A59804D46E1F /* Frameworks */,
+				66F8606E9F0A136E2228EBCB /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Manmaru;
+			packageProductDependencies = (
+				A43F75913BD82CC2D3660178 /* FirebaseAuth */,
+				85A429BE25C8F9D0F865443D /* FirebaseFirestore */,
+			);
+			productName = Manmaru;
+			productReference = A97C29AD63741CF438998CE6 /* まんまる.app */;
+			productType = "com.apple.product-type.application";
+		};
+		438158C40F9661F37528D026 /* PrimaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46A33BCBF4323A8F79BBC8A4 /* PrimaryButton.swift */; };
+		4474A7E3AB5833EE1267D3CA /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
+		449D9955D41B727CBAD87A2C /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				CE54862293CEA1D9A6CB6492 /* FirebaseSetupView.swift */,
+				E44639E182E6EC5BC2866E9D /* SignInView.swift */,
+			);
+			path = Auth;
+			sourceTree = "<group>";
+		};
+		46A33BCBF4323A8F79BBC8A4 /* PrimaryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimaryButton.swift; sourceTree = "<group>"; };
+		46F86FAA6BBF9AC94A7E4595 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1600;
+				LastUpgradeCheck = 1600;
+				ORGANIZATIONNAME = Manmaru;
+				TargetAttributes = {
+					42AEFBAE01D2DFD981F7DA7D = {
+						CreatedOnToolsVersion = 16.0;
+					};
+				};
+			};
+			buildConfigurationList = A6392603704BC67DABF5ACDA /* Build configuration list for PBXProject "Manmaru" */;
+			compatibilityVersion = "Xcode 15.0";
+			developmentRegion = ja;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				ja,
+				Base,
+			);
+			mainGroup = 5928955287B8089ED2177128;
+			packageReferences = (
+				6B49FFC2396172909D2F19D7 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
+			productRefGroup = BF7A2D27A78D590BDEF15AF2 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				42AEFBAE01D2DFD981F7DA7D /* Manmaru */,
+			);
+		};
+		47F308D361BD7C2704CA60CA /* CoupleService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA3CB5146C31B9454A29ABCB /* CoupleService.swift */; };
+		480FAA11B9A24ABB622698B2 /* ScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleView.swift; sourceTree = "<group>"; };
+		491A0F91E04F2B08443D692A /* MapsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D99C0287749EFDA8BA525DA /* MapsService.swift */; };
+		4B6ACF189A3A6EAF74060C01 /* Destination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F032A3D18F8AE8EEF8BA735 /* Destination.swift */; };
+		4DC7B479A29173674AFD7BAC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Manmaru/Resources/Manmaru.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Manmaru/Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.manmaru.app;
+				PRODUCT_NAME = "まんまる";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		4DCF74979BEDF82DB7604C68 /* DatePlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CDBBDA2FB6403D85A19E860 /* DatePlan.swift */; };
+		5311FB4A63AD908BEBC63AE9 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 85A429BE25C8F9D0F865443D /* FirebaseFirestore */; };
+		54076EC71AEF2CCF5971CE03 /* DateFormatting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateFormatting.swift; sourceTree = "<group>"; };
+		5631B7DCA8D44F8FC9759491 /* AppRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRoute.swift; sourceTree = "<group>"; };
+		5691B70601428D3D13900A8C /* DateDetail */ = {
+			isa = PBXGroup;
+			children = (
+				3CEE13D0C7EC56A93AE3E796 /* DateDetailSheet.swift */,
+				7FA8A1D1A14F1188F4A84E91 /* DateEditorView.swift */,
+				9E349BCA876A17F79F7C17F7 /* PlaceSearchView.swift */,
+			);
+			path = DateDetail;
+			sourceTree = "<group>";
+		};
+		5928955287B8089ED2177128 = {
+			isa = PBXGroup;
+			children = (
+				33942C6F7C8468D557D7812C /* Manmaru */,
+				BF7A2D27A78D590BDEF15AF2 /* Products */,
+				175C932161BEBF3B8BB1F58C /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		5B9D915C5D9B3E2B7334ACFC /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F58A28164D7E0F8F1A6BC7A1 /* GoogleService-Info.plist */; };
+		5FDB91368D7DDA2418B6CB65 /* Design */ = {
+			isa = PBXGroup;
+			children = (
+				A369A52CF3E6E6E08468A48E /* Components */,
+				0D989E4A1AB86E00C885E9E1 /* AppTheme.swift */,
+				68431445BD0A80E2C7F5C60D /* Color+Hex.swift */,
+			);
+			path = Design;
+			sourceTree = "<group>";
+		};
+		609874F33224C0C09F1FEE42 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				32594761333DBC7990655EB4 /* AuthService.swift */,
+				BA3CB5146C31B9454A29ABCB /* CoupleService.swift */,
+				2E8ACCAB570433030B5A2CB8 /* DateService.swift */,
+				698A195C7BA8F2FC8F8A7965 /* FirebaseBootstrap.swift */,
+				23AA9E329C70CECDC4B24CE5 /* InviteCodeGenerator.swift */,
+				8D99C0287749EFDA8BA525DA /* MapsService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		65A87EC9751F57AE2D366A02 /* AppleSignInButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C2DD12880BC003C1230C3A /* AppleSignInButton.swift */; };
+		65C34FA05FF27781C1EE0FF0 /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
+		66F8606E9F0A136E2228EBCB /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A6070B9CF28E71610AA267AE /* Assets.xcassets in Resources */,
+				5B9D915C5D9B3E2B7334ACFC /* GoogleService-Info.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6791D28828F6285B1DAA2BD7 /* MonthGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthGridView.swift; sourceTree = "<group>"; };
+		683105B965893FCC643C4ECF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Manmaru/Resources/Manmaru.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Manmaru/Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.manmaru.app;
+				PRODUCT_NAME = "まんまる";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_TESTABILITY = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		68431445BD0A80E2C7F5C60D /* Color+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color+Hex.swift; sourceTree = "<group>"; };
+		698A195C7BA8F2FC8F8A7965 /* FirebaseBootstrap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseBootstrap.swift; sourceTree = "<group>"; };
+		6AFED50DE7D00B9327280CB7 /* Schedule */ = {
+			isa = PBXGroup;
+			children = (
+				480FAA11B9A24ABB622698B2 /* ScheduleView.swift */,
+			);
+			path = Schedule;
+			sourceTree = "<group>";
+		};
+		6B49FFC2396172909D2F19D7 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.0.0;
+			};
+		};
+		6BCD3F6163F9588E092F73C0 /* Haptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Haptics.swift; sourceTree = "<group>"; };
+		6CDBBDA2FB6403D85A19E860 /* DatePlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePlan.swift; sourceTree = "<group>"; };
+		6F032A3D18F8AE8EEF8BA735 /* Destination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Destination.swift; sourceTree = "<group>"; };
+		6FF28C0F4865AF78AF9F66ED /* EmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateView.swift; sourceTree = "<group>"; };
+		71307F56FE0F050CBFE8BD6D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				SDKROOT = iphoneos;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_TESTABILITY = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		78E302EB1DD82BD6EB8CAD67 /* AppRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5631B7DCA8D44F8FC9759491 /* AppRoute.swift */; };
+		7FA8A1D1A14F1188F4A84E91 /* DateEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateEditorView.swift; sourceTree = "<group>"; };
+		85A429BE25C8F9D0F865443D /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6B49FFC2396172909D2F19D7 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+		887A6F90336FF23D95C3914B /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				A790BB479B2477E3A634A1EB /* Assets.xcassets */,
+				F58A28164D7E0F8F1A6BC7A1 /* GoogleService-Info.plist */,
+				F6C49E4434E4AB56F89617A9 /* Info.plist */,
+				3D43A2D3D32E118D5918F595 /* Manmaru.entitlements */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		8A92152CD3DCFBDDE5E91F81 /* DateDetailSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CEE13D0C7EC56A93AE3E796 /* DateDetailSheet.swift */; };
+		8D99C0287749EFDA8BA525DA /* MapsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapsService.swift; sourceTree = "<group>"; };
+		9021D2FAC036FC5D483E9E11 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				54076EC71AEF2CCF5971CE03 /* DateFormatting.swift */,
+				6BCD3F6163F9588E092F73C0 /* Haptics.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		926C29AB09E213A6E11A0407 /* PairingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BED7969557A2846A5CDDDE7 /* PairingView.swift */; };
+		9740FBDFEAB1CBBE29CF2E18 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		984D844B917CCD4C29DE2A97 /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				449D9955D41B727CBAD87A2C /* Auth */,
+				11C4EC900AA1965E5F60389D /* Calendar */,
+				5691B70601428D3D13900A8C /* DateDetail */,
+				9F62019FF49E733320001221 /* Pairing */,
+				6AFED50DE7D00B9327280CB7 /* Schedule */,
+				2C3495591E10CB2A6AB17552 /* Settings */,
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
+		98F1B5BB4A1EF7BCD6DA771B /* ScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 480FAA11B9A24ABB622698B2 /* ScheduleView.swift */; };
+		9E349BCA876A17F79F7C17F7 /* PlaceSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceSearchView.swift; sourceTree = "<group>"; };
+		9F62019FF49E733320001221 /* Pairing */ = {
+			isa = PBXGroup;
+			children = (
+				2BED7969557A2846A5CDDDE7 /* PairingView.swift */,
+			);
+			path = Pairing;
+			sourceTree = "<group>";
+		};
+		A1C86A29E589D48EC70B6A32 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				5631B7DCA8D44F8FC9759491 /* AppRoute.swift */,
+				B028C05074C7F87E414BB213 /* CoupleProfile.swift */,
+				6CDBBDA2FB6403D85A19E860 /* DatePlan.swift */,
+				6F032A3D18F8AE8EEF8BA735 /* Destination.swift */,
+				D2ED17BAEF8924FFF12E9EBA /* UserProfile.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		A2220A4AE89604536286363F /* AuthenticationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 143B9D7EB7729F7BEE101DA5 /* AuthenticationServices.framework */; };
+		A369A52CF3E6E6E08468A48E /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				39F4679E348D1ADADE2A6A0E /* AppCard.swift */,
+				F8C2DD12880BC003C1230C3A /* AppleSignInButton.swift */,
+				6FF28C0F4865AF78AF9F66ED /* EmptyStateView.swift */,
+				46A33BCBF4323A8F79BBC8A4 /* PrimaryButton.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		A43F75913BD82CC2D3660178 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6B49FFC2396172909D2F19D7 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		A53A2E73E9FB587BD8AFAEC9 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		A6070B9CF28E71610AA267AE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A790BB479B2477E3A634A1EB /* Assets.xcassets */; };
+		A6392603704BC67DABF5ACDA /* Build configuration list for PBXProject "Manmaru" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				71307F56FE0F050CBFE8BD6D /* Debug */,
+				D4147F9DEB4AD84BF3A14790 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A790BB479B2477E3A634A1EB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A9263677FBC56837DC3AC939 /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BCD3F6163F9588E092F73C0 /* Haptics.swift */; };
+		A97C29AD63741CF438998CE6 /* まんまる.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "まんまる.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		AFD04581184175117C78D9AC /* Build configuration list for PBXNativeTarget "Manmaru" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				683105B965893FCC643C4ECF /* Debug */,
+				4DC7B479A29173674AFD7BAC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B028C05074C7F87E414BB213 /* CoupleProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoupleProfile.swift; sourceTree = "<group>"; };
+		BA3CB5146C31B9454A29ABCB /* CoupleService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoupleService.swift; sourceTree = "<group>"; };
+		BE1B4DF7F40434474DE684F0 /* CoupleProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = B028C05074C7F87E414BB213 /* CoupleProfile.swift */; };
+		BF4B7B6B476AD282BE1D4B04 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32594761333DBC7990655EB4 /* AuthService.swift */; };
+		BF7A2D27A78D590BDEF15AF2 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A97C29AD63741CF438998CE6 /* まんまる.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C079D028A1BE36D2C96C1366 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53A2E73E9FB587BD8AFAEC9 /* SettingsView.swift */; };
+		C25249D78170C431EA6F7EBA /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65C34FA05FF27781C1EE0FF0 /* AppModel.swift */; };
+		C649C519C482DD50DBCF1C11 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4474A7E3AB5833EE1267D3CA /* CalendarView.swift */; };
+		C82E061505D03DD938744F01 /* DateFormatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54076EC71AEF2CCF5971CE03 /* DateFormatting.swift */; };
+		CE54862293CEA1D9A6CB6492 /* FirebaseSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseSetupView.swift; sourceTree = "<group>"; };
+		D1D0524B025E57AFFF263442 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				65C34FA05FF27781C1EE0FF0 /* AppModel.swift */,
+				0D0F6894B24D91C7F6073EF2 /* MainTabView.swift */,
+				319524AC56A0FD9B8764496F /* ManmaruApp.swift */,
+				9740FBDFEAB1CBBE29CF2E18 /* RootView.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		D2ED17BAEF8924FFF12E9EBA /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
+		D4147F9DEB4AD84BF3A14790 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				SDKROOT = iphoneos;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		D4803EA0F8EE48CDCB1905F9 /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44639E182E6EC5BC2866E9D /* SignInView.swift */; };
+		D70693A67A737A2B3F37986C /* ManmaruApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 319524AC56A0FD9B8764496F /* ManmaruApp.swift */; };
+		DC7565B4B3850967BFF8F444 /* AppCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F4679E348D1ADADE2A6A0E /* AppCard.swift */; };
+		E44639E182E6EC5BC2866E9D /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
+		E5E29A934C8A9DFC2546DCB5 /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF28C0F4865AF78AF9F66ED /* EmptyStateView.swift */; };
+		E7209FB05162B7572F88D05E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C25249D78170C431EA6F7EBA /* AppModel.swift in Sources */,
+				FDE80B0386CADF22598D5068 /* MainTabView.swift in Sources */,
+				D70693A67A737A2B3F37986C /* ManmaruApp.swift in Sources */,
+				E778BEAA207CC8A8B11361D2 /* RootView.swift in Sources */,
+				FCF8AEA2832F97FBEF8C7A29 /* AppTheme.swift in Sources */,
+				27D5EBF642EB0F465F060B0C /* Color+Hex.swift in Sources */,
+				DC7565B4B3850967BFF8F444 /* AppCard.swift in Sources */,
+				65A87EC9751F57AE2D366A02 /* AppleSignInButton.swift in Sources */,
+				E5E29A934C8A9DFC2546DCB5 /* EmptyStateView.swift in Sources */,
+				438158C40F9661F37528D026 /* PrimaryButton.swift in Sources */,
+				398F4310700A77A59A4780E2 /* FirebaseSetupView.swift in Sources */,
+				D4803EA0F8EE48CDCB1905F9 /* SignInView.swift in Sources */,
+				C649C519C482DD50DBCF1C11 /* CalendarView.swift in Sources */,
+				1908D02323B3F5213CA8B70A /* MonthGridView.swift in Sources */,
+				FF107EFE8EC5EA7C0579EE5B /* NextDateCard.swift in Sources */,
+				8A92152CD3DCFBDDE5E91F81 /* DateDetailSheet.swift in Sources */,
+				06267CBF8B98FD02F300E7FB /* DateEditorView.swift in Sources */,
+				F819250684F51099E125FA8C /* PlaceSearchView.swift in Sources */,
+				926C29AB09E213A6E11A0407 /* PairingView.swift in Sources */,
+				98F1B5BB4A1EF7BCD6DA771B /* ScheduleView.swift in Sources */,
+				C079D028A1BE36D2C96C1366 /* SettingsView.swift in Sources */,
+				78E302EB1DD82BD6EB8CAD67 /* AppRoute.swift in Sources */,
+				BE1B4DF7F40434474DE684F0 /* CoupleProfile.swift in Sources */,
+				4DCF74979BEDF82DB7604C68 /* DatePlan.swift in Sources */,
+				4B6ACF189A3A6EAF74060C01 /* Destination.swift in Sources */,
+				F48D9C88F81E6A1927A0FB1D /* UserProfile.swift in Sources */,
+				BF4B7B6B476AD282BE1D4B04 /* AuthService.swift in Sources */,
+				47F308D361BD7C2704CA60CA /* CoupleService.swift in Sources */,
+				05529BA3E3BAEAD11261696A /* DateService.swift in Sources */,
+				0A2A03228A1E63D8233A2A23 /* FirebaseBootstrap.swift in Sources */,
+				F0DE85A0218C07844D75CEAA /* InviteCodeGenerator.swift in Sources */,
+				491A0F91E04F2B08443D692A /* MapsService.swift in Sources */,
+				C82E061505D03DD938744F01 /* DateFormatting.swift in Sources */,
+				A9263677FBC56837DC3AC939 /* Haptics.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E778BEAA207CC8A8B11361D2 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9740FBDFEAB1CBBE29CF2E18 /* RootView.swift */; };
+		F0DE85A0218C07844D75CEAA /* InviteCodeGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23AA9E329C70CECDC4B24CE5 /* InviteCodeGenerator.swift */; };
+		F48D9C88F81E6A1927A0FB1D /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2ED17BAEF8924FFF12E9EBA /* UserProfile.swift */; };
+		F58A28164D7E0F8F1A6BC7A1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		F6C49E4434E4AB56F89617A9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F819250684F51099E125FA8C /* PlaceSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E349BCA876A17F79F7C17F7 /* PlaceSearchView.swift */; };
+		F8C2DD12880BC003C1230C3A /* AppleSignInButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleSignInButton.swift; sourceTree = "<group>"; };
+		FCF8AEA2832F97FBEF8C7A29 /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D989E4A1AB86E00C885E9E1 /* AppTheme.swift */; };
+		FCFA5E8CC86D9C8D051E017E /* NextDateCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextDateCard.swift; sourceTree = "<group>"; };
+		FDE80B0386CADF22598D5068 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D0F6894B24D91C7F6073EF2 /* MainTabView.swift */; };
+		FF107EFE8EC5EA7C0579EE5B /* NextDateCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCFA5E8CC86D9C8D051E017E /* NextDateCard.swift */; };
+		FF939F7CD1136EC6E04D365D /* CryptoKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D6F906223706F0CF2B32F9D /* CryptoKit.framework */; };
+	};
+	rootObject = 46F86FAA6BBF9AC94A7E4595 /* Project object */;
+}
