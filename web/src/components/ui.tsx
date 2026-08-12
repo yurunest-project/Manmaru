@@ -21,47 +21,35 @@ function setSheetOpen(open: boolean) {
   }
 }
 
-type ViewportRect = {
-  top: number;
-  left: number;
-  width: number;
-  height: number;
-  keyboardOpen: boolean;
-};
-
-function readViewport(): ViewportRect {
-  const vv = window.visualViewport;
-  const height = Math.round(vv?.height ?? window.innerHeight);
-  const width = Math.round(vv?.width ?? window.innerWidth);
-  const top = Math.round(vv?.offsetTop ?? 0);
-  const left = Math.round(vv?.offsetLeft ?? 0);
-  const keyboardOpen = height < window.innerHeight - 80;
-  return { top, left, width, height, keyboardOpen };
-}
-
-function useVisualViewportRect() {
-  const [rect, setRect] = useState<ViewportRect>(() =>
-    typeof window === "undefined"
-      ? { top: 0, left: 0, width: 390, height: 800, keyboardOpen: false }
-      : readViewport(),
-  );
+/** キーボードで隠れた下端の高さ。backdrop は常に inset:0 のまま、ここだけ padding する */
+function useKeyboardBottomInset() {
+  const [inset, setInset] = useState(0);
 
   useEffect(() => {
-    const sync = () => setRect(readViewport());
+    const sync = () => {
+      const vv = window.visualViewport;
+      if (!vv) {
+        setInset(0);
+        return;
+      }
+      const next = Math.max(0, Math.round(window.innerHeight - vv.height - vv.offsetTop));
+      setInset(next);
+      if (next === 0 && window.scrollY !== 0) {
+        window.scrollTo(0, lockedScrollY);
+      }
+    };
     sync();
     window.visualViewport?.addEventListener("resize", sync);
     window.visualViewport?.addEventListener("scroll", sync);
     window.addEventListener("resize", sync);
-    window.addEventListener("orientationchange", sync);
     return () => {
       window.visualViewport?.removeEventListener("resize", sync);
       window.visualViewport?.removeEventListener("scroll", sync);
       window.removeEventListener("resize", sync);
-      window.removeEventListener("orientationchange", sync);
     };
   }, []);
 
-  return rect;
+  return inset;
 }
 
 export function Card({
@@ -114,7 +102,7 @@ export function Sheet({
   onClose,
   children,
   header,
-  /** 検索など入力中心のシート。キーボード時は画面いっぱいに広げる */
+  /** 行き先検索など。見た目はボトムシートのまま、縦いっぱいに近づける */
   preferFill = false,
 }: {
   title: string;
@@ -128,13 +116,21 @@ export function Sheet({
   const startY = useRef(0);
   const dragYRef = useRef(0);
   const bodyRef = useRef<HTMLDivElement>(null);
-  const vv = useVisualViewportRect();
-  const fill = preferFill || vv.keyboardOpen;
+  const keyboardInset = useKeyboardBottomInset();
+  const keyboardOpen = keyboardInset > 72;
 
   useEffect(() => {
     setSheetOpen(true);
     return () => setSheetOpen(false);
   }, []);
+
+  // キーボードが閉じたらドラッグ量もリセット（途中状態の崩れ防止）
+  useEffect(() => {
+    if (!keyboardOpen) {
+      setDragY(0);
+      dragYRef.current = 0;
+    }
+  }, [keyboardOpen]);
 
   useEffect(() => {
     const root = bodyRef.current;
@@ -151,14 +147,14 @@ export function Sheet({
         if (tRect.bottom > cRect.bottom - 12 || tRect.top < cRect.top + 12) {
           container.scrollTop += tRect.top - cRect.top - 16;
         }
-      }, 50);
+      }, 80);
     };
     root.addEventListener("focusin", onFocusIn);
     return () => root.removeEventListener("focusin", onFocusIn);
   }, []);
 
   const onPointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
-    if (vv.keyboardOpen) return;
+    if (keyboardOpen) return;
     startY.current = event.clientY;
     dragYRef.current = 0;
     setDragging(true);
@@ -188,39 +184,36 @@ export function Sheet({
 
   return (
     <div
-      className={`sheet-backdrop${fill ? " sheet-fill" : ""}`}
+      className={`sheet-backdrop${preferFill ? " sheet-fill" : ""}`}
       onClick={onClose}
       role="presentation"
       style={{
-        top: vv.top,
-        left: vv.left,
-        width: vv.width,
-        height: vv.height,
         background: `rgba(15, 23, 36, ${backdropOpacity})`,
+        paddingBottom: keyboardInset,
       }}
     >
       <div
-        className={`sheet${dragging ? " dragging" : ""}${fill ? " is-fill" : ""}`}
+        className={`sheet${dragging ? " dragging" : ""}${preferFill ? " is-fill" : ""}`}
         onClick={(event) => event.stopPropagation()}
         role="dialog"
         aria-label={title}
         style={{
-          transform: fill ? undefined : `translateY(${dragY}px)`,
-          maxHeight: fill ? "100%" : Math.min(vv.height * 0.92, vv.height),
-          height: fill ? "100%" : undefined,
+          transform: `translateY(${dragY}px)`,
+          // キーボード中は「見える領域」の高さいっぱいに収める（角丸は CSS で維持）
+          maxHeight: keyboardOpen || preferFill ? "100%" : "min(92dvh, 100%)",
+          height: preferFill || keyboardOpen ? "100%" : undefined,
+          paddingBottom: keyboardOpen ? 12 : undefined,
         }}
       >
-        {!vv.keyboardOpen && (
-          <div
-            className="sheet-handle-area"
-            onPointerDown={onPointerDown}
-            onPointerMove={onPointerMove}
-            onPointerUp={finishDrag}
-            onPointerCancel={finishDrag}
-          >
-            <div className="sheet-handle" />
-          </div>
-        )}
+        <div
+          className="sheet-handle-area"
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={finishDrag}
+          onPointerCancel={finishDrag}
+        >
+          <div className="sheet-handle" />
+        </div>
         <div className="topbar">
           <button type="button" onClick={onClose} className="sheet-close">
             閉じる

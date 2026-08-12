@@ -538,6 +538,7 @@ textarea {
 
 .sheet-backdrop {
   position: fixed;
+  inset: 0;
   z-index: 40;
   display: flex;
   align-items: flex-end;
@@ -570,8 +571,8 @@ textarea {
 .sheet.is-fill {
   width: 100%;
   max-width: 430px;
-  border-radius: 0;
-  padding-bottom: 12px;
+  /* 境目（角丸）は消さない */
+  border-radius: 28px 28px 0 0;
   flex: 1 1 auto;
 }
 
