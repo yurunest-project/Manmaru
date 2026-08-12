@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, Empty } from "../components/ui";
 import { daysUntil, fullDate } from "../lib/dates";
 import { useApp } from "../state/AppProvider";
@@ -8,18 +8,11 @@ import { DateDetailSheet, DateEditorSheet } from "./DateSheets";
 
 export function ScheduleScreen() {
   const { sortedDates } = useApp();
-  const topRef = useRef<HTMLDivElement>(null);
   const [detail, setDetail] = useState<DatePlan | null>(null);
   const [editor, setEditor] = useState<DatePlan | null>(null);
 
-  useEffect(() => {
-    topRef.current?.scrollIntoView({ block: "start" });
-    window.scrollTo({ top: 0, behavior: "auto" });
-  }, []);
-
   return (
     <section className="screen">
-      <div ref={topRef} />
       <div className="topbar">
         <h1>今後の予定</h1>
         <button className="plus" type="button" onClick={() => setEditor(blankPlan())} aria-label="追加">
@@ -145,11 +138,7 @@ export function SettingsScreen() {
                 </button>
               </div>
               <p className="muted">
-                {couple.memberIds.length >= 2
-                  ? partnerName
-                    ? `${partnerName} とつながっています`
-                    : "2人でつながっています"
-                  : "相手の参加を待っています"}
+                {couple.memberIds.length >= 2 ? "2人でつながっています" : "相手の参加を待っています"}
               </p>
             </>
           ) : (
@@ -185,7 +174,7 @@ export function SettingsScreen() {
                 maxLength={32}
               />
               <button
-                className="secondary"
+                className="secondary btn-compact"
                 type="button"
                 disabled={busy || !nicknameDirty || !nickname.trim()}
                 onClick={() => void saveNickname()}

@@ -59,15 +59,17 @@ html,
 body,
 #root {
   margin: 0;
-  min-height: 100%;
-  min-height: 100dvh;
-  overflow-x: clip;
+  height: 100%;
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--bg);
 }
 
 body {
   font-family: "Hiragino Maru Gothic ProN", "Hiragino Sans", "Yu Gothic", system-ui, sans-serif;
-  background: #111;
+  background: var(--bg);
   color: var(--text);
+  overscroll-behavior: none;
 }
 
 button,
@@ -84,25 +86,32 @@ button {
 }
 
 .app-shell {
-  min-height: 100dvh;
+  height: 100dvh;
+  width: 100%;
   background: var(--bg);
   color: var(--text);
+  overflow: hidden;
 }
 
 .phone {
   width: 100%;
   max-width: 430px;
   margin: 0 auto;
-  min-height: 100dvh;
+  height: 100%;
   position: relative;
-  overflow-x: clip;
+  overflow: hidden;
+  background: var(--bg);
 }
 
 .screen {
-  min-height: 100dvh;
+  height: 100%;
   width: 100%;
   max-width: 100%;
-  padding: calc(18px + env(safe-area-inset-top)) 20px 120px;
+  overflow-x: clip;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  padding: calc(18px + env(safe-area-inset-top)) 20px calc(110px + env(safe-area-inset-bottom));
 }
 
 .screen.centered {
@@ -173,7 +182,7 @@ p {
   width: 100%;
   border-radius: calc(var(--radius) - 6px);
   padding: 16px 18px;
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .primary {
@@ -183,17 +192,32 @@ p {
 
 .secondary {
   background: var(--primary-soft);
-  color: var(--primary);
+  color: var(--text);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--primary) 35%, transparent);
+}
+
+.secondary:disabled {
+  opacity: 0.4;
+}
+
+.btn-compact {
+  width: auto;
+  flex: none;
+  min-width: 76px;
+  padding: 12px 16px;
+  white-space: nowrap;
 }
 
 .ghost {
   background: var(--surface);
   color: var(--text);
+  box-shadow: 0 6px 16px var(--shadow);
 }
 
 .danger-btn {
   background: var(--surface);
   color: var(--danger);
+  font-weight: 800;
 }
 
 .icon-btn {
@@ -504,23 +528,58 @@ textarea {
   display: flex;
   align-items: flex-end;
   justify-content: center;
+  touch-action: none;
 }
 
 .sheet {
   width: min(430px, 100%);
   max-height: 92dvh;
-  overflow: auto;
+  display: flex;
+  flex-direction: column;
   background: var(--bg);
   border-radius: 28px 28px 0 0;
-  padding: 16px 20px calc(28px + env(safe-area-inset-bottom));
+  padding: 8px 20px calc(28px + env(safe-area-inset-bottom));
+  transition: transform 0.22s ease;
+  will-change: transform;
+}
+
+.sheet.dragging {
+  transition: none;
+}
+
+.sheet-handle-area {
+  display: grid;
+  place-items: center;
+  padding: 10px 0 8px;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.sheet-handle-area:active {
+  cursor: grabbing;
 }
 
 .sheet-handle {
   width: 42px;
   height: 5px;
   border-radius: 99px;
-  background: var(--muted);
-  margin: 0 auto 14px;
+  background: color-mix(in srgb, var(--text-2) 55%, var(--muted));
+}
+
+.sheet-close {
+  color: var(--text);
+  font-weight: 700;
+  min-width: 48px;
+  text-align: left;
+}
+
+.sheet-body {
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  flex: 1;
+  min-height: 0;
 }
 
 .search-list {

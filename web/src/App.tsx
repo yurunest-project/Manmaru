@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { AppProvider, useApp } from "./state/AppProvider";
 import { PairingScreen, SetupScreen, SignInScreen } from "./screens/AuthScreens";
 import { CalendarScreen } from "./screens/CalendarScreen";
@@ -41,6 +42,11 @@ function Main() {
 
 function Root() {
   const { route, themeId, error, setError } = useApp();
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", themeId);
+  }, [themeId]);
+
   return (
     <div className="app-shell" data-theme={themeId}>
       <div className="phone">
