@@ -6,22 +6,28 @@ function setSheetOpen(open: boolean) {
   openSheetCount = Math.max(0, openSheetCount + (open ? 1 : -1));
   document.body.classList.toggle("sheet-open", openSheetCount > 0);
   document.body.style.overflow = openSheetCount > 0 ? "hidden" : "";
+  if (openSheetCount === 0) {
+    window.scrollTo(0, 0);
+  }
 }
 
-function useVisualViewportBox() {
-  const [box, setBox] = useState(() => ({
-    top: 0,
-    height: typeof window === "undefined" ? 800 : window.innerHeight,
-    keyboardOpen: false,
-  }));
+/** キーボード分だけ下余白を取る。backdrop 自体は常に inset:0 で位置崩れを防ぐ */
+function useKeyboardBottomInset() {
+  const [inset, setInset] = useState(0);
 
   useEffect(() => {
     const sync = () => {
       const vv = window.visualViewport;
-      const height = vv?.height ?? window.innerHeight;
-      const top = vv?.offsetTop ?? 0;
-      const keyboardOpen = height < window.innerHeight - 72;
-      setBox({ top, height, keyboardOpen });
+      if (!vv) {
+        setInset(0);
+        return;
+      }
+      const next = Math.max(0, Math.round(window.innerHeight - vv.height - vv.offsetTop));
+      setInset(next);
+      // iOS でキーボード後にページがずれたままになるのを戻す
+      if (next === 0 && (window.scrollY !== 0 || vv.offsetTop !== 0)) {
+        window.scrollTo(0, 0);
+      }
     };
     sync();
     window.visualViewport?.addEventListener("resize", sync);
@@ -34,7 +40,7 @@ function useVisualViewportBox() {
     };
   }, []);
 
-  return box;
+  return inset;
 }
 
 export function Card({
@@ -96,7 +102,8 @@ export function Sheet({
   const startY = useRef(0);
   const dragYRef = useRef(0);
   const bodyRef = useRef<HTMLDivElement>(null);
-  const viewport = useVisualViewportBox();
+  const keyboardInset = useKeyboardBottomInset();
+  const keyboardOpen = keyboardInset > 72;
 
   useEffect(() => {
     setSheetOpen(true);
@@ -112,8 +119,14 @@ export function Sheet({
       if (!(target instanceof HTMLElement)) return;
       if (target.tagName !== "INPUT" && target.tagName !== "TEXTAREA") return;
       window.setTimeout(() => {
-        target.scrollIntoView({ block: "center", behavior: "smooth" });
-      }, 80);
+        const container = bodyRef.current;
+        if (!container) return;
+        const containerRect = container.getBoundingClientRect();
+        const targetRect = target.getBoundingClientRect();
+        const delta =
+          targetRect.top - containerRect.top - container.clientHeight / 2 + targetRect.height / 2;
+        container.scrollTop += delta;
+      }, 50);
     };
 
     root.addEventListener("focusin", onFocusIn);
@@ -147,17 +160,15 @@ export function Sheet({
   };
 
   const backdropOpacity = Math.max(0.12, 0.45 * (1 - dragY / 320));
-  const sheetMaxHeight = Math.max(240, viewport.height - (viewport.keyboardOpen ? 8 : 16));
 
   return (
     <div
-      className={`sheet-backdrop${viewport.keyboardOpen ? " keyboard-open" : ""}`}
+      className={`sheet-backdrop${keyboardOpen ? " keyboard-open" : ""}`}
       onClick={onClose}
       role="presentation"
       style={{
-        top: viewport.top,
-        height: viewport.height,
         background: `rgba(15, 23, 36, ${backdropOpacity})`,
+        paddingBottom: keyboardInset,
       }}
     >
       <div
@@ -165,13 +176,7 @@ export function Sheet({
         onClick={(event) => event.stopPropagation()}
         role="dialog"
         aria-label={title}
-        style={{
-          transform: `translateY(${dragY}px)`,
-          maxHeight: sheetMaxHeight,
-          paddingBottom: viewport.keyboardOpen
-            ? 12
-            : "calc(20px + env(safe-area-inset-bottom))",
-        }}
+        style={{ transform: `translateY(${dragY}px)` }}
       >
         <div
           className="sheet-handle-area"
