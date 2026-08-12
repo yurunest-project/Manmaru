@@ -591,7 +591,8 @@ textarea {
 .sheet-handle-area {
   display: grid;
   place-items: center;
-  padding: 10px 0 8px;
+  margin: -12px -20px 0;
+  padding: 22px 48px 18px;
   cursor: grab;
   touch-action: none;
   user-select: none;
