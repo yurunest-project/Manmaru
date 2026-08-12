@@ -552,12 +552,20 @@ textarea {
   will-change: transform;
   margin: 0 auto;
   flex: 0 1 auto;
+  min-height: 0;
+  box-sizing: border-box;
 }
 
 .sheet-backdrop.keyboard-open .sheet {
   border-radius: 20px 20px 0 0;
-  max-height: 100%;
   padding-bottom: 12px;
+}
+
+.sheet-search-field {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--surface);
 }
 
 .sheet.dragging {

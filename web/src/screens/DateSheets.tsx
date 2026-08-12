@@ -235,13 +235,14 @@ function PlaceSearchSheet({
   return (
     <Sheet title="行き先を探す" onClose={onClose}>
       <div className="stack">
-        <div className="card">
+        <div className="card sheet-search-field">
           <input
             className="field"
             value={query}
             placeholder="お店や場所を検索"
             onChange={(event) => setQuery(event.target.value)}
             autoFocus
+            enterKeyHint="search"
           />
         </div>
         {loading && <p className="muted">検索中...</p>}

@@ -11,21 +11,19 @@ function setSheetOpen(open: boolean) {
   }
 }
 
-/** キーボード分だけ下余白を取る。backdrop 自体は常に inset:0 で位置崩れを防ぐ */
-function useKeyboardBottomInset() {
-  const [inset, setInset] = useState(0);
+function useKeyboardLayout() {
+  const [layout, setLayout] = useState(() => ({
+    inset: 0,
+    visibleHeight: typeof window === "undefined" ? 800 : window.innerHeight,
+  }));
 
   useEffect(() => {
     const sync = () => {
       const vv = window.visualViewport;
-      if (!vv) {
-        setInset(0);
-        return;
-      }
-      const next = Math.max(0, Math.round(window.innerHeight - vv.height - vv.offsetTop));
-      setInset(next);
-      // iOS でキーボード後にページがずれたままになるのを戻す
-      if (next === 0 && (window.scrollY !== 0 || vv.offsetTop !== 0)) {
+      const visibleHeight = Math.round(vv?.height ?? window.innerHeight);
+      const inset = Math.max(0, Math.round(window.innerHeight - visibleHeight - (vv?.offsetTop ?? 0)));
+      setLayout({ inset, visibleHeight });
+      if (inset === 0 && window.scrollY !== 0) {
         window.scrollTo(0, 0);
       }
     };
@@ -40,7 +38,7 @@ function useKeyboardBottomInset() {
     };
   }, []);
 
-  return inset;
+  return layout;
 }
 
 export function Card({
@@ -102,8 +100,12 @@ export function Sheet({
   const startY = useRef(0);
   const dragYRef = useRef(0);
   const bodyRef = useRef<HTMLDivElement>(null);
-  const keyboardInset = useKeyboardBottomInset();
-  const keyboardOpen = keyboardInset > 72;
+  const { inset, visibleHeight } = useKeyboardLayout();
+  const keyboardOpen = inset > 72;
+  // キーボード上に収まる高さ。閉じているときは画面の 92% まで
+  const sheetHeight = keyboardOpen
+    ? Math.max(280, visibleHeight - 4)
+    : Math.min(Math.round(visibleHeight * 0.92), visibleHeight);
 
   useEffect(() => {
     setSheetOpen(true);
@@ -121,12 +123,12 @@ export function Sheet({
       window.setTimeout(() => {
         const container = bodyRef.current;
         if (!container) return;
-        const containerRect = container.getBoundingClientRect();
-        const targetRect = target.getBoundingClientRect();
-        const delta =
-          targetRect.top - containerRect.top - container.clientHeight / 2 + targetRect.height / 2;
-        container.scrollTop += delta;
-      }, 50);
+        const cRect = container.getBoundingClientRect();
+        const tRect = target.getBoundingClientRect();
+        if (tRect.top < cRect.top + 8 || tRect.bottom > cRect.bottom - 8) {
+          container.scrollTop += tRect.top - cRect.top - 12;
+        }
+      }, 60);
     };
 
     root.addEventListener("focusin", onFocusIn);
@@ -168,7 +170,7 @@ export function Sheet({
       role="presentation"
       style={{
         background: `rgba(15, 23, 36, ${backdropOpacity})`,
-        paddingBottom: keyboardInset,
+        paddingBottom: inset,
       }}
     >
       <div
@@ -176,7 +178,11 @@ export function Sheet({
         onClick={(event) => event.stopPropagation()}
         role="dialog"
         aria-label={title}
-        style={{ transform: `translateY(${dragY}px)` }}
+        style={{
+          transform: `translateY(${dragY}px)`,
+          height: keyboardOpen ? sheetHeight : undefined,
+          maxHeight: sheetHeight,
+        }}
       >
         <div
           className="sheet-handle-area"
