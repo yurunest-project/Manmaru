@@ -45,7 +45,7 @@ export function SignInScreen() {
       <div className="hero-mark">
         <span />
         <i />
-        <b />
+        <b>♥</b>
       </div>
       <h1 style={{ textAlign: "center" }}>まんまる</h1>
       <p className="muted" style={{ textAlign: "center", margin: "10px 0 36px" }}>

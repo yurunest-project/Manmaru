@@ -276,55 +276,35 @@ p {
 }
 
 .hero-mark span,
-.hero-mark i,
-.hero-mark b {
+.hero-mark i {
   position: absolute;
   inset: 0;
   margin: auto;
+  border-radius: 50%;
 }
 
 .hero-mark span {
   width: 140px;
   height: 140px;
-  border-radius: 50%;
   background: var(--primary-soft);
 }
 
 .hero-mark i {
-  width: 108px;
-  height: 108px;
-  border-radius: 50%;
-  border: 10px solid var(--primary);
-  background: transparent;
-  box-sizing: border-box;
+  width: 92px;
+  height: 92px;
+  background: var(--primary);
 }
 
 .hero-mark b {
-  width: 46px;
-  height: 42px;
-  background: var(--primary);
-  border-radius: 50% 50% 48% 48%;
-  transform: rotate(-45deg);
-}
-
-.hero-mark b::before,
-.hero-mark b::after {
-  content: "";
   position: absolute;
-  width: 46px;
-  height: 42px;
-  background: var(--primary);
-  border-radius: 50%;
-}
-
-.hero-mark b::before {
-  top: -22px;
-  left: 0;
-}
-
-.hero-mark b::after {
-  top: 0;
-  left: 22px;
+  inset: 0;
+  margin: auto;
+  width: 28px;
+  height: 28px;
+  color: var(--on-primary);
+  display: grid;
+  place-items: center;
+  font-size: 28px;
 }
 
 .google-btn {

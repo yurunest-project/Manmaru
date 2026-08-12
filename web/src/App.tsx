@@ -80,7 +80,7 @@ function Root() {
                 <div className="hero-mark">
                   <span />
                   <i />
-                  <b />
+                  <b>♥</b>
                 </div>
                 <h1 style={{ textAlign: "center" }}>まんまる</h1>
               </section>
