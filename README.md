@@ -52,7 +52,7 @@ cp web/.env.example web/.env
 6. [Vercel](https://vercel.com) に Git リポジトリを取り込み、Environment Variables に次を入れる
 
 - `VITE_FIREBASE_API_KEY`
-- `VITE_FIREBASE_AUTH_DOMAIN`
+- `VITE_FIREBASE_AUTH_DOMAIN` → **`hitomoshi-ab905.firebaseapp.com`**（Vercel のドメインではない）
 - `VITE_FIREBASE_PROJECT_ID`
 - `VITE_FIREBASE_STORAGE_BUCKET`
 - `VITE_FIREBASE_MESSAGING_SENDER_ID`
@@ -64,15 +64,17 @@ Root Directory は空のままで大丈夫です（リポジトリ直下の `ver
 
 ### Google ログインが iPhone で止まるとき
 
-Vercel では auth を自ドメイン経由にする必要があります（`vercel.json` に `/__/auth/` プロキシ済み）。
+1. Vercel の `VITE_FIREBASE_AUTH_DOMAIN` が **`hitomoshi-ab905.firebaseapp.com`** になっているか確認（`manmaru-chi.vercel.app` だと `redirect_uri_mismatch` になります）
+2. 変更したら **Redeploy** する
+3. Firebase Authentication → **Settings → Authorized domains** に Vercel のドメイン（例: `manmaru-chi.vercel.app`）を追加
 
-**Google Cloud → 認証情報 → OAuth 2.0 クライアント ID** の「承認済みのリダイレクト URI」に追加:
+Google Cloud → 認証情報 → OAuth 2.0 クライアント ID の「承認済みのリダイレクト URI」に、通常は次が自動登録されています:
 
 ```
-https://manmaru-chi.vercel.app/__/auth/handler
+https://hitomoshi-ab905.firebaseapp.com/__/auth/handler
 ```
 
-**API キーの HTTP リファラー** にも `https://manmaru-chi.vercel.app/*` を入れてください。
+**API キーの HTTP リファラー** に `https://manmaru-chi.vercel.app/*` を入れてください。
 
 ## iOS アプリ（あとから）
 

@@ -32,6 +32,7 @@ import {
   type ReactNode,
 } from "react";
 import { isSameDay, startOfDay } from "../lib/dates";
+import { authErrorMessage, preferRedirectSignIn } from "../lib/authFlow";
 import { auth, db, firebaseReady } from "../lib/firebase";
 import { samplePlans } from "../lib/samples";
 import type {
@@ -191,7 +192,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         await getRedirectResult(auth!);
       } catch (err) {
         if (!active) return;
-        const message = err instanceof Error ? err.message : "ログインできませんでした";
+        const message = authErrorMessage(err);
         if (!message.includes("popup-closed")) {
           setError(`ログインに失敗しました: ${message}`);
         }
@@ -283,6 +284,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
     provider.setCustomParameters({ prompt: "select_account" });
 
     try {
+      if (preferRedirectSignIn()) {
+        await signInWithRedirect(auth, provider);
+        return;
+      }
       await signInWithPopup(auth, provider);
     } catch (err) {
       const code = (err as { code?: string }).code ?? "";
@@ -297,13 +302,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
           await signInWithRedirect(auth, provider);
           return;
         } catch (redirectErr) {
-          const message =
-            redirectErr instanceof Error ? redirectErr.message : "ログインできませんでした";
-          setError(message);
+          setError(authErrorMessage(redirectErr));
         }
       } else if (code !== "auth/popup-closed-by-user") {
-        const message = err instanceof Error ? err.message : "ログインできませんでした";
-        setError(message);
+        setError(authErrorMessage(err));
       }
     } finally {
       setBusy(false);
