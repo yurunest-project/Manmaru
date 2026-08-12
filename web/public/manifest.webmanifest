@@ -1,7 +1,7 @@
 {
   "name": "まんまる",
   "short_name": "まんまる",
-  "description": "ふたりの次のデートを、いちばん近くに。",
+  "description": "ふたりの次のおでかけを、いちばん近くに。",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

@@ -1,7 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { AppProvider, useApp } from "./state/AppProvider";
 import { PairingScreen, SetupScreen, SignInScreen } from "./screens/AuthScreens";
 import { CalendarScreen } from "./screens/CalendarScreen";
+import { LegalScreen, parseLegalHash } from "./screens/LegalScreens";
 import { ScheduleScreen, SettingsScreen } from "./screens/ScheduleScreen";
 
 function TabBar() {
@@ -40,8 +41,28 @@ function Main() {
   );
 }
 
+function useLegalHash() {
+  const [legal, setLegal] = useState(() => parseLegalHash());
+
+  useEffect(() => {
+    const sync = () => setLegal(parseLegalHash());
+    sync();
+    window.addEventListener("hashchange", sync);
+    return () => window.removeEventListener("hashchange", sync);
+  }, []);
+
+  const closeLegal = () => {
+    const { pathname, search } = window.location;
+    window.history.replaceState(null, "", `${pathname}${search}`);
+    setLegal(null);
+  };
+
+  return { legal, closeLegal };
+}
+
 function Root() {
   const { route, themeId, error, setError } = useApp();
+  const { legal, closeLegal } = useLegalHash();
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", themeId);
@@ -50,19 +71,26 @@ function Root() {
   return (
     <div className="app-shell" data-theme={themeId}>
       <div className="phone">
-        {route === "loading" && (
-          <section className="screen centered">
-            <div className="hero-mark">
-              <span />
-              <i />
-            </div>
-            <h1 style={{ textAlign: "center" }}>まんまる</h1>
-          </section>
+        {legal ? (
+          <LegalScreen kind={legal} onClose={closeLegal} />
+        ) : (
+          <>
+            {route === "loading" && (
+              <section className="screen centered">
+                <div className="hero-mark">
+                  <span />
+                  <i />
+                  <b />
+                </div>
+                <h1 style={{ textAlign: "center" }}>まんまる</h1>
+              </section>
+            )}
+            {route === "setup" && <SetupScreen />}
+            {route === "signedOut" && <SignInScreen />}
+            {route === "pairing" && <PairingScreen />}
+            {route === "main" && <Main />}
+          </>
         )}
-        {route === "setup" && <SetupScreen />}
-        {route === "signedOut" && <SignInScreen />}
-        {route === "pairing" && <PairingScreen />}
-        {route === "main" && <Main />}
         {error && (
           <button className="alert" type="button" onClick={() => setError(null)}>
             {error}

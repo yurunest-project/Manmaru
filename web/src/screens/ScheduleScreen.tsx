@@ -5,6 +5,7 @@ import { useApp } from "../state/AppProvider";
 import type { DatePlan } from "../types";
 import { blankPlan, displayTitle } from "../types";
 import { DateDetailSheet, DateEditorSheet } from "./DateSheets";
+import { LegalLinks } from "./LegalScreens";
 
 export function ScheduleScreen() {
   const { sortedDates } = useApp();
@@ -197,6 +198,11 @@ export function SettingsScreen() {
         <button className="ghost" type="button" onClick={() => void signOut()}>
           {preview ? "サンプルを終了" : "ログアウト"}
         </button>
+
+        <h2>サポート・情報</h2>
+        <div className="card">
+          <LegalLinks />
+        </div>
       </div>
     </section>
   );

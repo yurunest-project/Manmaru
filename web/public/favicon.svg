@@ -1,4 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="112" fill="#E891A3"/>
-  <path fill="#FFFFFF" d="M256 392 C256 392 112 278 112 182 C112 124 158 84 214 84 C244 84 256 112 256 128 C256 112 268 84 298 84 C354 84 400 124 400 182 C400 278 256 392 256 392 Z"/>
+  <!-- soft square background -->
+  <rect width="512" height="512" rx="112" fill="#FFF3F6"/>
+  <!-- outer ring -->
+  <circle cx="256" cy="256" r="196" fill="none" stroke="#E891A3" stroke-width="44"/>
+  <!-- round soft heart -->
+  <path
+    fill="#E891A3"
+    d="M256 368
+       C256 368 148 286 148 208
+       C148 164 180 136 220 136
+       C240 136 252 146 256 160
+       C260 146 272 136 292 136
+       C332 136 364 164 364 208
+       C364 286 256 368 256 368 Z"
+  />
 </svg>

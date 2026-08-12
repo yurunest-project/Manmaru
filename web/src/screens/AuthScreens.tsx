@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useApp } from "../state/AppProvider";
+import { LegalLinks } from "./LegalScreens";
 
 export function SetupScreen() {
   const { enterPreview } = useApp();
@@ -44,11 +45,11 @@ export function SignInScreen() {
       <div className="hero-mark">
         <span />
         <i />
-        <b>♥</b>
+        <b />
       </div>
       <h1 style={{ textAlign: "center" }}>まんまる</h1>
       <p className="muted" style={{ textAlign: "center", margin: "10px 0 36px" }}>
-        ふたりの次のデートを、
+        ふたりの次のおでかけを、
         <br />
         いちばん近くに。
       </p>
@@ -79,6 +80,7 @@ export function SignInScreen() {
       <button className="muted" type="button" style={{ marginTop: 18 }} onClick={enterPreview}>
         サンプルで見る
       </button>
+      <LegalLinks className="signin-legal" />
     </section>
   );
 }

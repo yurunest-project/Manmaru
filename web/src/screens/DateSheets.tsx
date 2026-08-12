@@ -215,12 +215,18 @@ function PlaceSearchSheet({
       void searchPlaces(trimmed, controller.signal)
         .then((items) => {
           setResults(items);
-          if (items.length === 0) setError("見つかりませんでした。別のキーワードか、下のボタンで追加できます。");
+          if (items.length === 0) {
+            setError("見つかりませんでした。下のボタンで名前を追加できます。");
+          }
         })
         .catch((err: unknown) => {
           if ((err as { name?: string }).name === "AbortError") return;
           setResults([]);
-          setError(err instanceof Error ? err.message : "検索に失敗しました");
+          setError(
+            err instanceof Error
+              ? err.message
+              : "検索に失敗しました。下のボタンで名前を追加できます。",
+          );
         })
         .finally(() => {
           if (!controller.signal.aborted) setLoading(false);
