@@ -1,5 +1,42 @@
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode } from "react";
 
+let openSheetCount = 0;
+
+function setSheetOpen(open: boolean) {
+  openSheetCount = Math.max(0, openSheetCount + (open ? 1 : -1));
+  document.body.classList.toggle("sheet-open", openSheetCount > 0);
+  document.body.style.overflow = openSheetCount > 0 ? "hidden" : "";
+}
+
+function useVisualViewportBox() {
+  const [box, setBox] = useState(() => ({
+    top: 0,
+    height: typeof window === "undefined" ? 800 : window.innerHeight,
+    keyboardOpen: false,
+  }));
+
+  useEffect(() => {
+    const sync = () => {
+      const vv = window.visualViewport;
+      const height = vv?.height ?? window.innerHeight;
+      const top = vv?.offsetTop ?? 0;
+      const keyboardOpen = height < window.innerHeight - 72;
+      setBox({ top, height, keyboardOpen });
+    };
+    sync();
+    window.visualViewport?.addEventListener("resize", sync);
+    window.visualViewport?.addEventListener("scroll", sync);
+    window.addEventListener("resize", sync);
+    return () => {
+      window.visualViewport?.removeEventListener("resize", sync);
+      window.visualViewport?.removeEventListener("scroll", sync);
+      window.removeEventListener("resize", sync);
+    };
+  }, []);
+
+  return box;
+}
+
 export function Card({
   children,
   className = "",
@@ -58,13 +95,29 @@ export function Sheet({
   const [dragging, setDragging] = useState(false);
   const startY = useRef(0);
   const dragYRef = useRef(0);
+  const bodyRef = useRef<HTMLDivElement>(null);
+  const viewport = useVisualViewportBox();
 
   useEffect(() => {
-    const previous = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = previous;
+    setSheetOpen(true);
+    return () => setSheetOpen(false);
+  }, []);
+
+  useEffect(() => {
+    const root = bodyRef.current;
+    if (!root) return;
+
+    const onFocusIn = (event: FocusEvent) => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) return;
+      if (target.tagName !== "INPUT" && target.tagName !== "TEXTAREA") return;
+      window.setTimeout(() => {
+        target.scrollIntoView({ block: "center", behavior: "smooth" });
+      }, 80);
     };
+
+    root.addEventListener("focusin", onFocusIn);
+    return () => root.removeEventListener("focusin", onFocusIn);
   }, []);
 
   const onPointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
@@ -94,20 +147,31 @@ export function Sheet({
   };
 
   const backdropOpacity = Math.max(0.12, 0.45 * (1 - dragY / 320));
+  const sheetMaxHeight = Math.max(240, viewport.height - (viewport.keyboardOpen ? 8 : 16));
 
   return (
     <div
-      className="sheet-backdrop"
+      className={`sheet-backdrop${viewport.keyboardOpen ? " keyboard-open" : ""}`}
       onClick={onClose}
       role="presentation"
-      style={{ background: `rgba(15, 23, 36, ${backdropOpacity})` }}
+      style={{
+        top: viewport.top,
+        height: viewport.height,
+        background: `rgba(15, 23, 36, ${backdropOpacity})`,
+      }}
     >
       <div
         className={`sheet${dragging ? " dragging" : ""}`}
         onClick={(event) => event.stopPropagation()}
         role="dialog"
         aria-label={title}
-        style={{ transform: `translateY(${dragY}px)` }}
+        style={{
+          transform: `translateY(${dragY}px)`,
+          maxHeight: sheetMaxHeight,
+          paddingBottom: viewport.keyboardOpen
+            ? 12
+            : "calc(20px + env(safe-area-inset-bottom))",
+        }}
       >
         <div
           className="sheet-handle-area"
@@ -125,7 +189,9 @@ export function Sheet({
           <strong>{title}</strong>
           <span style={{ width: 48 }} />
         </div>
-        <div className="sheet-body">{children}</div>
+        <div className="sheet-body" ref={bodyRef}>
+          {children}
+        </div>
       </div>
     </div>
   );

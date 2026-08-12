@@ -334,6 +334,14 @@ p {
   grid-template-columns: 1fr 1fr 1fr;
   padding: 8px;
   z-index: 20;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+body.sheet-open .tabbar {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-50%) translateY(24px);
+  visibility: hidden;
 }
 
 .tab {
@@ -522,13 +530,19 @@ textarea {
 
 .sheet-backdrop {
   position: fixed;
-  inset: 0;
+  left: 0;
+  right: 0;
+  bottom: auto;
   background: rgba(15, 23, 36, 0.45);
-  z-index: 30;
+  z-index: 40;
   display: flex;
   align-items: flex-end;
   justify-content: center;
   touch-action: none;
+}
+
+.sheet-backdrop.keyboard-open {
+  align-items: stretch;
 }
 
 .sheet {
@@ -538,9 +552,16 @@ textarea {
   flex-direction: column;
   background: var(--bg);
   border-radius: 28px 28px 0 0;
-  padding: 8px 20px calc(28px + env(safe-area-inset-bottom));
+  padding: 8px 20px calc(20px + env(safe-area-inset-bottom));
   transition: transform 0.22s ease;
   will-change: transform;
+  margin: 0 auto;
+}
+
+.sheet-backdrop.keyboard-open .sheet {
+  border-radius: 20px 20px 0 0;
+  height: 100%;
+  max-height: none;
 }
 
 .sheet.dragging {
