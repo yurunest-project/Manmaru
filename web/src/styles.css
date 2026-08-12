@@ -272,39 +272,14 @@ p {
   width: 140px;
   height: 140px;
   margin: 0 auto 18px;
-  position: relative;
+  border-radius: 32px;
+  background: center / contain no-repeat url("/favicon.svg");
 }
 
 .hero-mark span,
-.hero-mark i {
-  position: absolute;
-  inset: 0;
-  margin: auto;
-  border-radius: 50%;
-}
-
-.hero-mark span {
-  width: 140px;
-  height: 140px;
-  background: var(--primary-soft);
-}
-
-.hero-mark i {
-  width: 92px;
-  height: 92px;
-  background: var(--primary);
-}
-
+.hero-mark i,
 .hero-mark b {
-  position: absolute;
-  inset: 0;
-  margin: auto;
-  width: 28px;
-  height: 28px;
-  color: var(--on-primary);
-  display: grid;
-  place-items: center;
-  font-size: 28px;
+  display: none;
 }
 
 .google-btn {
