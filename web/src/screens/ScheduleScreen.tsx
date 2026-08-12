@@ -200,9 +200,7 @@ export function SettingsScreen() {
         </button>
 
         <h2>サポート・情報</h2>
-        <div className="card">
-          <LegalLinks />
-        </div>
+        <LegalLinks />
       </div>
     </section>
   );

@@ -116,12 +116,12 @@ export function parseLegalHash(hash = window.location.hash): LegalKind | null {
 
 export function LegalLinks({ className = "" }: { className?: string }) {
   return (
-    <div className={`legal-links ${className}`.trim()}>
+    <nav className={`legal-links ${className}`.trim()} aria-label="サポート・情報">
       <button type="button" className="legal-link" onClick={() => openLegalHash("privacy")}>
-        プライバシーポリシー
+        プライバシー
       </button>
       <button type="button" className="legal-link" onClick={() => openLegalHash("tokushoho")}>
-        特定商取引法に基づく表記
+        特定商取引法
       </button>
       <a className="legal-link" href="mailto:hitomoshi@gmail.com?subject=%E3%81%BE%E3%82%93%E3%81%BE%E3%82%8B%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6">
         お問い合わせ
@@ -132,8 +132,8 @@ export function LegalLinks({ className = "" }: { className?: string }) {
         target="_blank"
         rel="noreferrer"
       >
-        ひともし（他の事業）
+        ひともし
       </a>
-    </div>
+    </nav>
   );
 }
