@@ -64,17 +64,19 @@ Root Directory は空のままで大丈夫です（リポジトリ直下の `ver
 
 ### Google ログインが iPhone で止まるとき
 
-1. Vercel の `VITE_FIREBASE_AUTH_DOMAIN` が **`hitomoshi-ab905.firebaseapp.com`** になっているか確認（`manmaru-chi.vercel.app` だと `redirect_uri_mismatch` になります）
-2. 変更したら **Redeploy** する
-3. Firebase Authentication → **Settings → Authorized domains** に Vercel のドメイン（例: `manmaru-chi.vercel.app`）を追加
+iPhone Safari では **同一ドメイン** で auth する必要があります（`vercel.json` の `/__/auth/` プロキシ + コード側で authDomain を Vercel ドメインに自動切替済み）。
 
-Google Cloud → 認証情報 → OAuth 2.0 クライアント ID の「承認済みのリダイレクト URI」に、通常は次が自動登録されています:
+1. Firebase Authentication → **Settings → Authorized domains** に Vercel のドメイン（例: `manmaru-chi.vercel.app`）を追加
+2. **Google Cloud → 認証情報 → OAuth 2.0 クライアント ID** の「承認済みのリダイレクト URI」に **両方** 追加:
 
 ```
 https://hitomoshi-ab905.firebaseapp.com/__/auth/handler
+https://manmaru-chi.vercel.app/__/auth/handler
 ```
 
-**API キーの HTTP リファラー** に `https://manmaru-chi.vercel.app/*` を入れてください。
+3. **API キーの HTTP リファラー** に `https://manmaru-chi.vercel.app/*` を追加
+4. Vercel の `VITE_FIREBASE_AUTH_DOMAIN` は **`hitomoshi-ab905.firebaseapp.com`** のままで OK（本番 URL ではコードが自動で Vercel ドメインを使います）
+5. 変更後は **Redeploy**
 
 ## iOS アプリ（あとから）
 

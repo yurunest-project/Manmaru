@@ -32,7 +32,7 @@ import {
   type ReactNode,
 } from "react";
 import { isSameDay, startOfDay } from "../lib/dates";
-import { authErrorMessage, preferRedirectSignIn } from "../lib/authFlow";
+import { authErrorMessage, returningFromAuthRedirect } from "../lib/authFlow";
 import { auth, db, firebaseReady } from "../lib/firebase";
 import { samplePlans } from "../lib/samples";
 import type {
@@ -186,10 +186,16 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }
 
     let active = true;
+    let unsubAuth = () => {};
 
     const boot = async () => {
+      const firebaseAuth = auth!;
+      if (returningFromAuthRedirect()) {
+        setRoute("loading");
+      }
+
       try {
-        await getRedirectResult(auth!);
+        await getRedirectResult(firebaseAuth);
       } catch (err) {
         if (!active) return;
         const message = authErrorMessage(err);
@@ -197,33 +203,36 @@ export function AppProvider({ children }: { children: ReactNode }) {
           setError(`ログインに失敗しました: ${message}`);
         }
       }
+
+      if (!active) return;
+
+      unsubAuth = onAuthStateChanged(firebaseAuth, async (user) => {
+        setUid(user?.uid ?? null);
+        if (!user || !db) {
+          setProfile(null);
+          setCouple(null);
+          setDates([]);
+          setRoute("signedOut");
+          return;
+        }
+        try {
+          const ensured = await ensureUser(user);
+          if (ensured) {
+            setProfile(ensured);
+            setThemeId(ensured.themeId);
+          }
+        } catch (err) {
+          setError(err instanceof Error ? err.message : "ログインに失敗しました");
+          setRoute("signedOut");
+        }
+      });
     };
 
     void boot();
 
-    const unsub = onAuthStateChanged(auth, async (user) => {
-      setUid(user?.uid ?? null);
-      if (!user || !db) {
-        setProfile(null);
-        setCouple(null);
-        setDates([]);
-        setRoute("signedOut");
-        return;
-      }
-      try {
-        const ensured = await ensureUser(user);
-        if (ensured) {
-          setProfile(ensured);
-          setThemeId(ensured.themeId);
-        }
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "ログインに失敗しました");
-        setRoute("signedOut");
-      }
-    });
     return () => {
       active = false;
-      unsub();
+      unsubAuth();
     };
   }, [ensureUser, preview]);
 
@@ -284,10 +293,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
     provider.setCustomParameters({ prompt: "select_account" });
 
     try {
-      if (preferRedirectSignIn()) {
-        await signInWithRedirect(auth, provider);
-        return;
-      }
       await signInWithPopup(auth, provider);
     } catch (err) {
       const code = (err as { code?: string }).code ?? "";
@@ -299,6 +304,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
       if (popupFailed && code !== "auth/popup-closed-by-user") {
         try {
+          setRoute("loading");
           await signInWithRedirect(auth, provider);
           return;
         } catch (redirectErr) {
