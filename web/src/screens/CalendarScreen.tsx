@@ -15,7 +15,7 @@ import { blankPlan, displayTitle } from "../types";
 import { DateDetailSheet, DateEditorSheet } from "./DateSheets";
 
 export function CalendarScreen() {
-  const { nextDate, dates, datesOn } = useApp();
+  const { nextDate, dates, datesOn, partnerName } = useApp();
   const [month, setMonth] = useState(() => new Date());
   const [detail, setDetail] = useState<DatePlan | null>(null);
   const [editor, setEditor] = useState<DatePlan | null>(null);
@@ -32,7 +32,14 @@ export function CalendarScreen() {
   return (
     <section className="screen">
       <div className="topbar">
-        <h1>カレンダー</h1>
+        <div>
+          <h1>カレンダー</h1>
+          {partnerName && (
+            <p className="muted" style={{ marginTop: 4, fontSize: 14 }}>
+              {partnerName} とつながっています
+            </p>
+          )}
+        </div>
         <button className="plus" type="button" onClick={() => setEditor(blankPlan())} aria-label="追加">
           +
         </button>

@@ -63,7 +63,7 @@ export function ScheduleScreen() {
 }
 
 export function SettingsScreen() {
-  const { themeId, setTheme, couple, profile, preview, signOut, switchAccount, leaveCouple, updateNickname, busy } =
+  const { themeId, setTheme, couple, profile, partnerName, preview, signOut, switchAccount, leaveCouple, updateNickname, busy } =
     useApp();
   const [copied, setCopied] = useState(false);
   const [nickname, setNickname] = useState(profile?.nickname ?? "");
@@ -120,6 +120,16 @@ export function SettingsScreen() {
         <div className="card stack">
           {couple ? (
             <>
+              <div>
+                <p className="muted">相手</p>
+                <strong>
+                  {partnerName
+                    ? partnerName
+                    : couple.memberIds.length >= 2
+                      ? "読み込み中..."
+                      : "まだ参加していません"}
+                </strong>
+              </div>
               <p className="muted">招待コード</p>
               <div className="row space">
                 <span className="invite">{couple.inviteCode}</span>
@@ -135,7 +145,11 @@ export function SettingsScreen() {
                 </button>
               </div>
               <p className="muted">
-                {couple.memberIds.length >= 2 ? "2人でつながっています" : "相手の参加を待っています"}
+                {couple.memberIds.length >= 2
+                  ? partnerName
+                    ? `${partnerName} とつながっています`
+                    : "2人でつながっています"
+                  : "相手の参加を待っています"}
               </p>
             </>
           ) : (

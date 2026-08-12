@@ -44,6 +44,7 @@ import type {
   ThemeId,
   UserProfile,
 } from "../types";
+import { partnerDisplayName } from "../types";
 
 const ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 
@@ -90,6 +91,8 @@ type AppState = {
   tab: Tab;
   themeId: ThemeId;
   profile: UserProfile | null;
+  partner: UserProfile | null;
+  partnerName: string | null;
   couple: CoupleProfile | null;
   dates: DatePlan[];
   error: string | null;
@@ -121,12 +124,18 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [tab, setTab] = useState<Tab>("calendar");
   const [themeId, setThemeId] = useState<ThemeId>("sakura");
   const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [partner, setPartner] = useState<UserProfile | null>(null);
   const [couple, setCouple] = useState<CoupleProfile | null>(null);
   const [dates, setDates] = useState<DatePlan[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [preview, setPreview] = useState(false);
   const [uid, setUid] = useState<string | null>(null);
+
+  const partnerName = useMemo(
+    () => (partner ? partnerDisplayName(partner) : null),
+    [partner],
+  );
 
   const nextDate = useMemo(() => {
     const start = startOfDay(new Date()).getTime();
@@ -210,6 +219,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setUid(user?.uid ?? null);
         if (!user || !db) {
           setProfile(null);
+          setPartner(null);
           setCouple(null);
           setDates([]);
           setRoute("signedOut");
@@ -250,6 +260,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       if (next.coupleId) setRoute("main");
       else {
         setCouple(null);
+        setPartner(null);
         setDates([]);
         setRoute("pairing");
       }
@@ -281,6 +292,27 @@ export function AppProvider({ children }: { children: ReactNode }) {
       unsubDates();
     };
   }, [profile?.coupleId, preview]);
+
+  useEffect(() => {
+    if (preview) return;
+    if (!db || !uid || !couple) {
+      if (!preview) setPartner(null);
+      return;
+    }
+    const partnerId = couple.memberIds.find((id) => id !== uid) ?? null;
+    if (!partnerId) {
+      setPartner(null);
+      return;
+    }
+    const unsub = onSnapshot(doc(db, "users", partnerId), (snap) => {
+      if (!snap.exists()) {
+        setPartner(null);
+        return;
+      }
+      setPartner(profileFromData(snap.data()));
+    });
+    return () => unsub();
+  }, [couple, uid, preview]);
 
   const performGoogleSignIn = async () => {
     if (!auth) {
@@ -351,6 +383,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setRoute(firebaseReady ? "signedOut" : "setup");
       setDates([]);
       setCouple(null);
+      setPartner(null);
       setProfile(null);
       return;
     }
@@ -505,6 +538,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
       themeId: "sakura",
       createdAt: new Date(),
     });
+    setPartner({
+      displayName: "みう",
+      email: "partner@example.com",
+      nickname: "みう",
+      coupleId: "preview",
+      themeId: "sakura",
+      createdAt: new Date(),
+    });
     setCouple({
       id: "preview",
       inviteCode: "HONEY1",
@@ -521,6 +562,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
     tab,
     themeId,
     profile,
+    partner,
+    partnerName,
     couple,
     dates,
     error,
