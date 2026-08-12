@@ -337,6 +337,14 @@ p {
   transition: opacity 0.18s ease, transform 0.18s ease;
 }
 
+body.sheet-open {
+  position: fixed;
+  left: 0;
+  right: 0;
+  width: 100%;
+  overflow: hidden;
+}
+
 body.sheet-open .tabbar {
   opacity: 0;
   pointer-events: none;
@@ -530,19 +538,21 @@ textarea {
 
 .sheet-backdrop {
   position: fixed;
-  inset: 0;
-  background: rgba(15, 23, 36, 0.45);
   z-index: 40;
   display: flex;
   align-items: flex-end;
   justify-content: center;
   touch-action: none;
   box-sizing: border-box;
+  overflow: hidden;
+}
+
+.sheet-backdrop.sheet-fill {
+  align-items: stretch;
 }
 
 .sheet {
   width: min(430px, 100%);
-  max-height: min(92dvh, 100%);
   display: flex;
   flex-direction: column;
   background: var(--bg);
@@ -554,17 +564,23 @@ textarea {
   flex: 0 1 auto;
   min-height: 0;
   box-sizing: border-box;
+  overflow: hidden;
 }
 
-.sheet-backdrop.keyboard-open .sheet {
-  border-radius: 20px 20px 0 0;
+.sheet.is-fill {
+  width: 100%;
+  max-width: 430px;
+  border-radius: 0;
   padding-bottom: 12px;
+  flex: 1 1 auto;
+}
+
+.sheet-header {
+  flex: none;
+  padding-bottom: 10px;
 }
 
 .sheet-search-field {
-  position: sticky;
-  top: 0;
-  z-index: 2;
   background: var(--surface);
 }
 

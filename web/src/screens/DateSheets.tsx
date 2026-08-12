@@ -233,8 +233,11 @@ function PlaceSearchSheet({
   }, [query]);
 
   return (
-    <Sheet title="行き先を探す" onClose={onClose}>
-      <div className="stack">
+    <Sheet
+      title="行き先を探す"
+      onClose={onClose}
+      preferFill
+      header={
         <div className="card sheet-search-field">
           <input
             className="field"
@@ -245,6 +248,9 @@ function PlaceSearchSheet({
             enterKeyHint="search"
           />
         </div>
+      }
+    >
+      <div className="stack">
         {loading && <p className="muted">検索中...</p>}
         {!loading && error && <p className="muted">{error}</p>}
         {query.trim().length >= 2 && (

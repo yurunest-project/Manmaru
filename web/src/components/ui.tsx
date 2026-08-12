@@ -1,44 +1,67 @@
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode } from "react";
 
 let openSheetCount = 0;
+let lockedScrollY = 0;
 
 function setSheetOpen(open: boolean) {
+  const wasOpen = openSheetCount > 0;
   openSheetCount = Math.max(0, openSheetCount + (open ? 1 : -1));
-  document.body.classList.toggle("sheet-open", openSheetCount > 0);
-  document.body.style.overflow = openSheetCount > 0 ? "hidden" : "";
-  if (openSheetCount === 0) {
-    window.scrollTo(0, 0);
+  const isOpen = openSheetCount > 0;
+
+  if (!wasOpen && isOpen) {
+    lockedScrollY = window.scrollY;
+    document.body.style.top = `-${lockedScrollY}px`;
+    document.body.classList.add("sheet-open");
+  }
+
+  if (wasOpen && !isOpen) {
+    document.body.classList.remove("sheet-open");
+    document.body.style.top = "";
+    window.scrollTo(0, lockedScrollY);
   }
 }
 
-function useKeyboardLayout() {
-  const [layout, setLayout] = useState(() => ({
-    inset: 0,
-    visibleHeight: typeof window === "undefined" ? 800 : window.innerHeight,
-  }));
+type ViewportRect = {
+  top: number;
+  left: number;
+  width: number;
+  height: number;
+  keyboardOpen: boolean;
+};
+
+function readViewport(): ViewportRect {
+  const vv = window.visualViewport;
+  const height = Math.round(vv?.height ?? window.innerHeight);
+  const width = Math.round(vv?.width ?? window.innerWidth);
+  const top = Math.round(vv?.offsetTop ?? 0);
+  const left = Math.round(vv?.offsetLeft ?? 0);
+  const keyboardOpen = height < window.innerHeight - 80;
+  return { top, left, width, height, keyboardOpen };
+}
+
+function useVisualViewportRect() {
+  const [rect, setRect] = useState<ViewportRect>(() =>
+    typeof window === "undefined"
+      ? { top: 0, left: 0, width: 390, height: 800, keyboardOpen: false }
+      : readViewport(),
+  );
 
   useEffect(() => {
-    const sync = () => {
-      const vv = window.visualViewport;
-      const visibleHeight = Math.round(vv?.height ?? window.innerHeight);
-      const inset = Math.max(0, Math.round(window.innerHeight - visibleHeight - (vv?.offsetTop ?? 0)));
-      setLayout({ inset, visibleHeight });
-      if (inset === 0 && window.scrollY !== 0) {
-        window.scrollTo(0, 0);
-      }
-    };
+    const sync = () => setRect(readViewport());
     sync();
     window.visualViewport?.addEventListener("resize", sync);
     window.visualViewport?.addEventListener("scroll", sync);
     window.addEventListener("resize", sync);
+    window.addEventListener("orientationchange", sync);
     return () => {
       window.visualViewport?.removeEventListener("resize", sync);
       window.visualViewport?.removeEventListener("scroll", sync);
       window.removeEventListener("resize", sync);
+      window.removeEventListener("orientationchange", sync);
     };
   }, []);
 
-  return layout;
+  return rect;
 }
 
 export function Card({
@@ -90,22 +113,23 @@ export function Sheet({
   title,
   onClose,
   children,
+  header,
+  /** 検索など入力中心のシート。キーボード時は画面いっぱいに広げる */
+  preferFill = false,
 }: {
   title: string;
   onClose: () => void;
   children: ReactNode;
+  header?: ReactNode;
+  preferFill?: boolean;
 }) {
   const [dragY, setDragY] = useState(0);
   const [dragging, setDragging] = useState(false);
   const startY = useRef(0);
   const dragYRef = useRef(0);
   const bodyRef = useRef<HTMLDivElement>(null);
-  const { inset, visibleHeight } = useKeyboardLayout();
-  const keyboardOpen = inset > 72;
-  // キーボード上に収まる高さ。閉じているときは画面の 92% まで
-  const sheetHeight = keyboardOpen
-    ? Math.max(280, visibleHeight - 4)
-    : Math.min(Math.round(visibleHeight * 0.92), visibleHeight);
+  const vv = useVisualViewportRect();
+  const fill = preferFill || vv.keyboardOpen;
 
   useEffect(() => {
     setSheetOpen(true);
@@ -115,7 +139,6 @@ export function Sheet({
   useEffect(() => {
     const root = bodyRef.current;
     if (!root) return;
-
     const onFocusIn = (event: FocusEvent) => {
       const target = event.target;
       if (!(target instanceof HTMLElement)) return;
@@ -125,17 +148,17 @@ export function Sheet({
         if (!container) return;
         const cRect = container.getBoundingClientRect();
         const tRect = target.getBoundingClientRect();
-        if (tRect.top < cRect.top + 8 || tRect.bottom > cRect.bottom - 8) {
-          container.scrollTop += tRect.top - cRect.top - 12;
+        if (tRect.bottom > cRect.bottom - 12 || tRect.top < cRect.top + 12) {
+          container.scrollTop += tRect.top - cRect.top - 16;
         }
-      }, 60);
+      }, 50);
     };
-
     root.addEventListener("focusin", onFocusIn);
     return () => root.removeEventListener("focusin", onFocusIn);
   }, []);
 
   const onPointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (vv.keyboardOpen) return;
     startY.current = event.clientY;
     dragYRef.current = 0;
     setDragging(true);
@@ -165,34 +188,39 @@ export function Sheet({
 
   return (
     <div
-      className={`sheet-backdrop${keyboardOpen ? " keyboard-open" : ""}`}
+      className={`sheet-backdrop${fill ? " sheet-fill" : ""}`}
       onClick={onClose}
       role="presentation"
       style={{
+        top: vv.top,
+        left: vv.left,
+        width: vv.width,
+        height: vv.height,
         background: `rgba(15, 23, 36, ${backdropOpacity})`,
-        paddingBottom: inset,
       }}
     >
       <div
-        className={`sheet${dragging ? " dragging" : ""}`}
+        className={`sheet${dragging ? " dragging" : ""}${fill ? " is-fill" : ""}`}
         onClick={(event) => event.stopPropagation()}
         role="dialog"
         aria-label={title}
         style={{
-          transform: `translateY(${dragY}px)`,
-          height: keyboardOpen ? sheetHeight : undefined,
-          maxHeight: sheetHeight,
+          transform: fill ? undefined : `translateY(${dragY}px)`,
+          maxHeight: fill ? "100%" : Math.min(vv.height * 0.92, vv.height),
+          height: fill ? "100%" : undefined,
         }}
       >
-        <div
-          className="sheet-handle-area"
-          onPointerDown={onPointerDown}
-          onPointerMove={onPointerMove}
-          onPointerUp={finishDrag}
-          onPointerCancel={finishDrag}
-        >
-          <div className="sheet-handle" />
-        </div>
+        {!vv.keyboardOpen && (
+          <div
+            className="sheet-handle-area"
+            onPointerDown={onPointerDown}
+            onPointerMove={onPointerMove}
+            onPointerUp={finishDrag}
+            onPointerCancel={finishDrag}
+          >
+            <div className="sheet-handle" />
+          </div>
+        )}
         <div className="topbar">
           <button type="button" onClick={onClose} className="sheet-close">
             閉じる
@@ -200,6 +228,7 @@ export function Sheet({
           <strong>{title}</strong>
           <span style={{ width: 48 }} />
         </div>
+        {header && <div className="sheet-header">{header}</div>}
         <div className="sheet-body" ref={bodyRef}>
           {children}
         </div>
